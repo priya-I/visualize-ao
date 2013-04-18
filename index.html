@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>D3 testing</title>
+		<script type="text/javascript" src="d3/d3.v3.js"></script>
+		<script type="text/javascript" src="demo.json"></script>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+		<script type="text/javascript">
+		var dataset=[];
+		var temp=[];
+		var ddata=demographic;
+        var w=2000;
+        var h=1000;
+
+        //Taking the data in an array
+        for(i=0;i<ddata.length;i++){
+        	temp=[]
+        	temp[0]=ddata[i]['edu_years'];
+        	temp[1]=ddata[i]['a1_1_age'];
+        	temp[2]=ddata[i]['village'];
+        	dataset[i]=temp;
+        }
+
+        //SVG Canvas Creation
+		var svg=d3.select("body")
+			.append("svg")
+			.attr("width",w)
+			.attr("height",h);
+
+
+		//Creating the scales
+		var ageScale=d3.scale.linear()
+						  .domain([18,90])
+						  .range([10,30])
+
+		var eduScale=d3.scale.linear()
+						  .domain([0,10])
+						  .range([0,20])
+
+		//Creating the axes
+		var xAxis=d3.svg.axis();
+		
+		//Binding the data with the g element
+		var elem=svg.selectAll("g circleTxt")
+		.data(dataset)
+
+		//Adding co-ordinates to the data
+		var elemEnter=elem.enter()
+		.append("g")
+		.attr("transform",function(d,i){
+			x=parseInt(d[0])*i+20;
+			y=parseInt(d[1]);
+		console.log(x,y)
+			return "translate("+x+","+y+")";
+		})
+
+		//Colors Map
+		colormap=[{village:"AKALA", color:"red"},{village:"BAMANBOR",color:"green"}];
+
+		//Circle definitions
+		var circles=elemEnter
+		.append("circle")
+		.attr({
+			"fill":function(d){
+				 return "hsl(" + Math.random() * 360 + ",100%,50%)";
+			},
+			"r":function(d){
+				return ageScale(parseInt(d[1]));
+			},
+			"opacity": "0.5"
+		})
+
+		//Text definitions
+		var circleTxt=elemEnter
+		.append("text")
+		.text(function(d){
+					value=d[0]+","+d[1];
+					return value;
+				})
+		.style({
+					"fill": "transparent",
+					"font-family":"sans-serif",
+					"font-size":"15px",
+					"font-weight":"bold"
+					
+				})
+
+
+		//What happens when you hover in and out
+		elemEnter
+		.on("mouseover",function(){
+			d3.select(this)
+				.select("circle")
+				.transition()
+				.style("fill","black")
+				.attr({
+					"r":50,
+				})
+			d3.select(this)
+				.select("text")
+				.style("fill","black");
+		
+		})
+		.on("mouseout",function(){
+			d3.select(this).select("circle")
+				.style({"fill":function(d){
+					 return "hsl(" + Math.random() * 360 + ",100%,50%)";
+				}
+			})
+				.transition()
+				.attr({
+					"r":function(d){
+				return ageScale(parseInt(d[1]));
+			},
+				})
+			d3.select(this).select("text")
+				.style("fill","transparent");
+		});
+		
+		</script>
+	</body>
+</html>
