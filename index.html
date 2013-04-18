@@ -6,14 +6,27 @@
 		<script type="text/javascript" src="d3/d3.v3.js"></script>
 		<script type="text/javascript" src="demo.json"></script>
 		<link rel="stylesheet" type="text/css" href="style.css">
+		<style type="css">
+			.axis path,
+ 			.axis line{
+ 				fill: none;
+ 				stroke: black;
+ 				shape-rendering: crispEdges;
+ 			}
+
+			 .axis text {
+    			font-family: sans-serif;
+    			font-size: 11px;
+			}
+		</style>
 	</head>
 	<body>
 		<script type="text/javascript">
 		var dataset=[];
 		var temp=[];
 		var ddata=demographic;
-        var w=2000;
-        var h=1000;
+        var w=1366;
+        var h=768;
 
         //Taking the data in an array
         for(i=0;i<ddata.length;i++){
@@ -30,18 +43,20 @@
 			.attr("width",w)
 			.attr("height",h);
 
-
+		var padding=20;
 		//Creating the scales
 		var ageScale=d3.scale.linear()
-						  .domain([18,90])
-						  .range([10,30])
+							 .domain([0,d3.max(dataset,function(d){ return d[0]; } ) ] )
+							 .range([padding,w-padding]);
 
 		var eduScale=d3.scale.linear()
-						  .domain([0,10])
-						  .range([0,20])
+						  .domain([0,d3.max(dataset,function(d){ return d[1]; } ) ] )
+						  .range([h-padding,padding]);
 
 		//Creating the axes
-		var xAxis=d3.svg.axis();
+		var xAxis = d3.svg.axis()
+                  .scale(ageScale)
+                  .orient("bottom");
 		
 		//Binding the data with the g element
 		var elem=svg.selectAll("g circleTxt")
@@ -51,15 +66,19 @@
 		var elemEnter=elem.enter()
 		.append("g")
 		.attr("transform",function(d,i){
-			x=parseInt(d[0])*i+20;
-			y=parseInt(d[1]);
-		console.log(x,y)
+			x=ageScale(parseInt(d[0]));
+			y=eduScale(parseInt(d[1]));
+			console.log(x,y)
 			return "translate("+x+","+y+")";
 		})
 
-		//Colors Map
-		colormap=[{village:"AKALA", color:"red"},{village:"BAMANBOR",color:"green"}];
+		svg
+		.append("g")
+		.style("class","axis")
+		.call(xAxis)
 
+		
+		
 		//Circle definitions
 		var circles=elemEnter
 		.append("circle")
@@ -68,7 +87,7 @@
 				 return "hsl(" + Math.random() * 360 + ",100%,50%)";
 			},
 			"r":function(d){
-				return ageScale(parseInt(d[1]));
+				return 10+parseInt(d[0])*2;
 			},
 			"opacity": "0.5"
 		})
@@ -97,7 +116,7 @@
 				.transition()
 				.style("fill","black")
 				.attr({
-					"r":50,
+					"r":50
 				})
 			d3.select(this)
 				.select("text")
@@ -113,8 +132,9 @@
 				.transition()
 				.attr({
 					"r":function(d){
-				return ageScale(parseInt(d[1]));
-			},
+				return 10+parseInt(d[0])*2;
+			}
+			
 				})
 			d3.select(this).select("text")
 				.style("fill","transparent");
