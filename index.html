@@ -1,145 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>D3 testing</title>
-		<script type="text/javascript" src="d3/d3.v3.js"></script>
-		<script type="text/javascript" src="demo.json"></script>
-		<link rel="stylesheet" type="text/css" href="style.css">
-		<style type="css">
-			.axis path,
- 			.axis line{
- 				fill: none;
- 				stroke: black;
- 				shape-rendering: crispEdges;
- 			}
+<html>
 
-			 .axis text {
-    			font-family: sans-serif;
-    			font-size: 11px;
-			}
-		</style>
-	</head>
-	<body>
-		<script type="text/javascript">
-		var dataset=[];
-		var temp=[];
-		var ddata=demographic;
-        var w=1366;
-        var h=768;
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Visualize-ao : Visualization of the Avaaj Otalo dataset (august 2011-september 2012)" />
 
-        //Taking the data in an array
-        for(i=0;i<ddata.length;i++){
-        	temp=[]
-        	temp[0]=ddata[i]['edu_years'];
-        	temp[1]=ddata[i]['a1_1_age'];
-        	temp[2]=ddata[i]['village'];
-        	dataset[i]=temp;
-        }
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-        //SVG Canvas Creation
-		var svg=d3.select("body")
-			.append("svg")
-			.attr("width",w)
-			.attr("height",h);
+    <title>Visualize-ao</title>
+  </head>
 
-		var padding=20;
-		//Creating the scales
-		var ageScale=d3.scale.linear()
-							 .domain([0,d3.max(dataset,function(d){ return d[0]; } ) ] )
-							 .range([padding,w-padding]);
+  <body>
 
-		var eduScale=d3.scale.linear()
-						  .domain([0,d3.max(dataset,function(d){ return d[1]; } ) ] )
-						  .range([h-padding,padding]);
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/priya-I/visualize-ao">View on GitHub</a>
 
-		//Creating the axes
-		var xAxis = d3.svg.axis()
-                  .scale(ageScale)
-                  .orient("bottom");
-		
-		//Binding the data with the g element
-		var elem=svg.selectAll("g circleTxt")
-		.data(dataset)
+          <h1 id="project_title">Visualize-ao</h1>
+          <h2 id="project_tagline">Visualization of the Avaaj Otalo dataset (august 2011-september 2012)</h2>
 
-		//Adding co-ordinates to the data
-		var elemEnter=elem.enter()
-		.append("g")
-		.attr("transform",function(d,i){
-			x=ageScale(parseInt(d[0]));
-			y=eduScale(parseInt(d[1]));
-			console.log(x,y)
-			return "translate("+x+","+y+")";
-		})
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/priya-I/visualize-ao/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/priya-I/visualize-ao/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
 
-		svg
-		.append("g")
-		.style("class","axis")
-		.call(xAxis)
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>Welcome to GitHub Pages.</h3>
 
-		
-		
-		//Circle definitions
-		var circles=elemEnter
-		.append("circle")
-		.attr({
-			"fill":function(d){
-				 return "hsl(" + Math.random() * 360 + ",100%,50%)";
-			},
-			"r":function(d){
-				return 10+parseInt(d[0])*2;
-			},
-			"opacity": "0.5"
-		})
+<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
 
-		//Text definitions
-		var circleTxt=elemEnter
-		.append("text")
-		.text(function(d){
-					value=d[0]+","+d[1];
-					return value;
-				})
-		.style({
-					"fill": "transparent",
-					"font-family":"sans-serif",
-					"font-size":"15px",
-					"font-weight":"bold"
-					
-				})
+<pre><code>$ cd your_repo_root/repo_name
+$ git fetch origin
+$ git checkout gh-pages
+</code></pre>
 
+<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
 
-		//What happens when you hover in and out
-		elemEnter
-		.on("mouseover",function(){
-			d3.select(this)
-				.select("circle")
-				.transition()
-				.style("fill","black")
-				.attr({
-					"r":50
-				})
-			d3.select(this)
-				.select("text")
-				.style("fill","black");
-		
-		})
-		.on("mouseout",function(){
-			d3.select(this).select("circle")
-				.style({"fill":function(d){
-					 return "hsl(" + Math.random() * 360 + ",100%,50%)";
-				}
-			})
-				.transition()
-				.attr({
-					"r":function(d){
-				return 10+parseInt(d[0])*2;
-			}
-			
-				})
-			d3.select(this).select("text")
-				.style("fill","transparent");
-		});
-		
-		</script>
-	</body>
+<h3>Designer Templates</h3>
+
+<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+
+<h3>Rather Drive Stick?</h3>
+
+<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+
+<h3>Authors and Contributors</h3>
+
+<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+
+<h3>Support or Contact</h3>
+
+<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Visualize-ao maintained by <a href="https://github.com/priya-I">priya-I</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
 </html>
