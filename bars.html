@@ -3,30 +3,41 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Visualize-AO</title>
+		<h1 class="small">Number of calls made per week from August 2011-September 2012</h1>
 		<script type="text/javascript" src="d3/d3.v3.js"></script>
 		<script type="text/javascript" src="bardata.json"></script>
-		<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
+		<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
 		<style type="text/css">
-			
-			.tick,.major{
-				stroke-width:2;
+			div.tooltip {   
+
+				  position: absolute;           
+				  text-align: center;           
+				  width: 60px;                  
+				  height: 60px;                 
+				  padding: 2px;	             
+				  font: 12px sans-serif;        
+				  background: #FFC4EB;   
+				  border: 0px;      
+				  border-radius: 8px;           
+				  pointer-events: none;         
 			}
-			.axis line {
-				fill: none;
-				stroke: red;
+			.chart {
 				shape-rendering: crispEdges;
 			}
-			
-			.axis,.g text {
-				font-family: sans-serif;
-				font-size: 11px;
-			}
 
-			.domain { 
+			text {
+				
+				font: 8px sans-serif;
+				
+			}
+			
+			path .domain { 
 			  fill: none; 
 			  stroke: black; 
-			  stroke-width: 1; 
+			  stroke-width: 2; 
 			} 
+
 		</style>
 	</head>
 
@@ -36,82 +47,81 @@
 			var ddata=bars;
         	var w=1000;
         	var h=700;
+        	var padding=30;
+        	var barPadding=5;
 			var svg=d3.select("body")
 					  .append("svg")
 					  .attr("width",w)
 				 	  .attr("height",h);
+				 	
 
-
-			var padding=30;
-			/*heightScale=d3.scale.linear()
-					.domain(0,d3.max(ddata,function(d){ return parseInt(d['sessions']); }))
-					.range(0,h);*/	
-			//Binding the data with the g element
-			var elem=svg.selectAll("g")
-						.data(ddata);
-			//Adding co-ordinates to the data
-			var elemEnter=elem.enter()
-							  .append("g");
-			
-			//Setting the bar attributes
-			var barPadding=1;
-			var barWidth=(w/ddata.length)+barPadding;
+			var barWidth=(w/ddata.length);
+			startdate=new Date(2011,08,19);
+		    enddate=new Date(2012,09,01);
 			//Creating the scales
-			var timescale=d3.scale.linear()
-								 .domain([0,ddata.length])
-								 .range([padding-barWidth,(barWidth*ddata.length)+padding]);
+			var timescale=d3.time.scale()
+								.domain([startdate,enddate])
+								.range([padding,w+1000+padding]);		
 
 			var sessionscale=d3.scale.linear()
 							  .domain([d3.min(ddata,function(d){ 
 							  				sessions=parseInt(d['sessions']);
-							  				return sessions; } )
-							  		,d3.max(ddata,function(d){ 
-							  				sessions=parseInt(d['sessions']);
-							  				return sessions; } ) ] )
+							  				return sessions; 
+							  			}),d3.max(ddata,function(d){ 
+							  					sessions=parseInt(d['sessions']);
+							  					return sessions; } ) ] )
 							  .range([h-padding,padding]);
 
 			var colorScale=d3.scale.linear()
 							.domain([d3.min(ddata,function(d){return parseInt(d['duration'])}),
 									d3.max(ddata,function(d){return parseInt(d['duration'])})
-								])
+									])
 							.range([0,256]);
 
 
 			//Creating the axes
-			var tickVals=[];
-			for(i=0;i<ddata.length;i++){
-                
-                tickVals.push(ddata[i]['week']);
-            }
-            tickVals.sort();
-            console.log(tickVals);
-			var xAxis = d3.svg.axis()
+		    var xAxis = d3.svg.axis()
                   .scale(timescale)
-                  .tickValues([1,2,3,4,5])
-                  .orient("bottom")
-                  .ticks(d3.time.weeks());
-			
-		
-            //Adding the axes
+                  .ticks(0)
+               //   .tickFormat(d3.time.format('%W'))
+                  .tickSize(1)
+                  .tickSubdivide(5)
+                  //.tickPadding(1)
+                  .orient("vertical");
+            
+            var yAxis = d3.svg.axis()
+            	.scale(sessionscale) 
+            	.ticks(0,1)               
+            	.tickSize(1)
+            	.orient("left");
 
-            svg
-			.append("g")
-			//.style("class","axis")
-			.attr("transform","translate(0,"+(h-padding)+")")
-			.call(xAxis);
-	
-			svg
-			.append("g")
-		//.style("class","axis")
-			.attr("transform","translate("+(w/ddata.length)+",0)")
-			//.call(yAxis);
-		
-			
+           
+			 //Adding the X-axis
+			XaxisGroup=svg.append("g")
+					.attr("transform","translate(0,"+(h-padding)+")")
+					.call(xAxis);
 
-			var bars=elemEnter
-					.append("rect")
+			XaxisGroup.selectAll("text")						
+					.style("class","axistext")
+					.attr({
+						//"transform":"rotate(-10)"
+					});
+			YaxisGroup=svg.append("g")
+					.attr("transform","translate("+padding+",0)")
+					.call(yAxis);	
+
+
+			
+			//Binding the data with the g and text elements
+			var barChart=svg.selectAll("g")
+					.data(ddata)
+					.enter()
+					.append("g");
+
+			barChart.append("rect")
 					.attr({
 					"x":function(d,i){
+						//console.log(d['week'],i);
 						return (i*21)+(w/ddata.length);
 					},
 					"y":function(d){
@@ -129,18 +139,28 @@
 					},
 					"width":(w/ddata.length)-barPadding,
 					opacity:1
-				});
-		
-			elemEnter.on("mouseover",function(){
+				});		
+
+			//Tooltip on mouse over
+			var div=d3.select("body").append("div")
+            .attr("class","tooltip")
+            .style("opacity",0);
+
+			barChart.on("mouseover",function(d){
 				d3.select(this)
 				.select("rect")
 				.transition()
 				.attr({
 					"width":20,
-					"fill":"black"
+					"fill":"#CD5555"
+				});
+				div.transition()
+					.style("opacity",.9)
+				div.html(
+					"Duration: "+d['duration']+" s, Sessions: "+d['sessions']+"<br/>")
+					.style("left",(d3.event.pageX)+"px")
+					.style("top",(d3.event.pageY)+"px");
 				})
-
-			})
 			.on("mouseout",function(){
 				d3.select(this)
 				.select("rect")
@@ -152,7 +172,15 @@
     				  	return "rgb("+String(color)+",0,0)";
 					}
 				})
+				div.transition()
+				.duration(500)
+				.style("opacity",0)
+				
 			})
+			
+
+			
+			
 	</script>
 	</body>
 </html>
