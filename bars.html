@@ -3,9 +3,9 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Visualize-AO</title>
-		<h1 class="small">Number of calls made per week from August 2011-September 2012</h1>
+		<!--<h1 class="small">Number of calls made per week from August 2011-September 2012</h1>-->
 		<script type="text/javascript" src="d3/d3.v3.js"></script>
-		<script type="text/javascript" src="bardata.json"></script>
+		<script type="text/javascript" src="barData1.json"></script>
 		<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
 		<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
 		<style type="text/css">
@@ -13,11 +13,11 @@
 
 				  position: absolute;           
 				  text-align: center;           
-				  width: 60px;                  
+				  width: 120px;                  
 				  height: 60px;                 
 				  padding: 2px;	             
 				  font: 12px sans-serif;        
-				  background: #FFC4EB;   
+				  background: #C0C0C0;   
 				  border: 0px;      
 				  border-radius: 8px;           
 				  pointer-events: none;         
@@ -35,7 +35,7 @@
 			path .domain { 
 			  fill: none; 
 			  stroke: black; 
-			  stroke-width: 2; 
+			  stroke-width: 1; 
 			} 
 
 		</style>
@@ -45,10 +45,10 @@
 		<script type="text/javascript">
 		
 			var ddata=bars;
-        	var w=1000;
-        	var h=700;
-        	var padding=30;
-        	var barPadding=5;
+        	var w=800;
+        	var h=600;
+        	var padding=10;
+        	var barPadding=1;
 			var svg=d3.select("body")
 					  .append("svg")
 					  .attr("width",w)
@@ -56,19 +56,24 @@
 				 	
 
 			var barWidth=(w/ddata.length);
-			startdate=new Date(2011,08,19);
-		    enddate=new Date(2012,09,01);
+			startdate=d3.min(ddata,function(d){
+				return new Date(d['date'])
+			});
+		    enddate=d3.max(ddata,function(d){
+				return new Date(d['date'])
+			});
+			console.log(startdate,enddate);
 			//Creating the scales
 			var timescale=d3.time.scale()
-								.domain([startdate,enddate])
-								.range([padding,w+1000+padding]);		
+								.domain([startdate,enddate]).nice()
+								.range([padding,w+padding]);		
 
 			var sessionscale=d3.scale.linear()
 							  .domain([d3.min(ddata,function(d){ 
-							  				sessions=parseInt(d['sessions']);
+							  				sessions=parseInt(d['sessions'])/7;
 							  				return sessions; 
 							  			}),d3.max(ddata,function(d){ 
-							  					sessions=parseInt(d['sessions']);
+							  					sessions=parseInt(d['sessions'])//7;
 							  					return sessions; } ) ] )
 							  .range([h-padding,padding]);
 
@@ -82,12 +87,15 @@
 			//Creating the axes
 		    var xAxis = d3.svg.axis()
                   .scale(timescale)
-                  .ticks(0)
-               //   .tickFormat(d3.time.format('%W'))
-                  .tickSize(1)
-                  .tickSubdivide(5)
+                  .orient("bottom")
+                  .ticks(d3.time.weeks,1)
+                  .ticks(0);
+                  //.tickSubdivide(5)
+                  //.tickSize(6,3,0)
                   //.tickPadding(1)
-                  .orient("vertical");
+              	  //.tickFormat(d3.time.format,"%W");
+           
+                  
             
             var yAxis = d3.svg.axis()
             	.scale(sessionscale) 
@@ -121,23 +129,23 @@
 			barChart.append("rect")
 					.attr({
 					"x":function(d,i){
-						//console.log(d['week'],i);
-						return (i*21)+(w/ddata.length);
+						return (i*10)+(w/ddata.length);
 					},
 					"y":function(d){
-						sessions=parseInt(d['sessions'])/10;
-						return h-sessions-30;
+						console.log(d['sessions'])
+						sessions=parseInt(d['sessions'])/7;
+						return h-padding-sessions;
 					},			
 					
 					"height":function(d,i){
-						sessions=parseInt(d['sessions'])/10;
+						sessions=parseInt(d['sessions'])/7;
 						return sessions;
 					},
 					"fill": function(d) {
 						color=Math.round(colorScale(parseInt(d['duration'])));
-    				  	return "rgb("+String(color)+",0,0)";
+    				  	return "rgb("+String(color)+",100,0)";
 					},
-					"width":(w/ddata.length)-barPadding,
+					"width":(w/ddata.length)+barPadding,
 					opacity:1
 				});		
 
@@ -145,6 +153,7 @@
 			var div=d3.select("body").append("div")
             .attr("class","tooltip")
             .style("opacity",0);
+
 
 			barChart.on("mouseover",function(d){
 				d3.select(this)
@@ -157,7 +166,8 @@
 				div.transition()
 					.style("opacity",.9)
 				div.html(
-					"Duration: "+d['duration']+" s, Sessions: "+d['sessions']+"<br/>")
+					"Duration: "+d['duration']+" s, Sessions: "+d['sessions']+"<br/>"
+					+"Time: "+d['date'])
 					.style("left",(d3.event.pageX)+"px")
 					.style("top",(d3.event.pageY)+"px");
 				})
@@ -166,10 +176,10 @@
 				.select("rect")
 				.transition()
 				.attr({
-					"width":(w/ddata.length)-barPadding,
+					"width":(w/ddata.length)+barPadding,
 					"fill": function(d) {
 						color=Math.round(colorScale(parseInt(d['duration'])));
-    				  	return "rgb("+String(color)+",0,0)";
+    				  	return "rgb("+String(color)+",100,0)";
 					}
 				})
 				div.transition()
