@@ -46,10 +46,11 @@
 	</head>
 
 	<body>
+		
 		<script type="text/javascript">
 		
 			var ddata=bars;
-			var actualW=1200;
+			var actualW=820;
         	var w=800;
         	var h=600;
         	var extendedH=650;
@@ -112,7 +113,7 @@
 					},
 					"fill": function(d) {
 						color=Math.round(colorScale(parseInt(d['duration'])));
-    				  	return "rgb("+String(color)+",100,0)";
+    				  	return "rgb("+String(256-color)+","+String(128-color)+",256)";
 					},
 					"width":barWidth,
 					opacity:1
@@ -125,10 +126,15 @@
 
             var cropdat=svg.append("text")
             .attr({
-            	"x":w-padding,
-            	"y":h/2
+
+            	"x":w/2-padding-100,
+            	"y":20
             })
-            .style("opacity",0)
+            .style({
+            	"opacity":0,
+            	"wordWrap":"break-word"
+
+            })
 
 			barChart.on("mouseover",function(d){
 				d3.select(this)
@@ -136,7 +142,7 @@
 				.transition()
 				.attr({
 					"width":15,
-					"fill":"yellow"
+					"fill":"orange"
 				});
 				div.transition()
 					.style("opacity",.9)
@@ -154,7 +160,7 @@
 					"width":barWidth,
 					"fill": function(d) {
 						color=Math.round(colorScale(parseInt(d['duration'])));
-    				  	return "rgb("+String(color)+",100,0)";
+    				  	return "rgb("+String(256-color)+","+String(128-color)+",256)";
 					}
 				})
 				div.transition()
@@ -180,7 +186,7 @@
             var yAxis = d3.svg.axis()
             	.scale(sessionscale) 
                	.tickSize(0,0,0)
-               	.ticks(3) 
+               	.ticks(5) 
             	.orient("right");
                	
 
@@ -225,5 +231,6 @@
 
 			
 	</script>
+
 	</body>
 </html>
