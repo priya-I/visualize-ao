@@ -11,39 +11,42 @@
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
 
     <!-- Le styles -->
-    
-    <style type="text/css">
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+		<style type="text/css">
+			div.tooltip {   
 
-      @media (max-width: 980px) {
-        /* Enable use of floated navbar text */
-        .navbar-text.pull-right {
-          float: none;
-          padding-left: 5px;
-          padding-right: 5px;
-        }
-      }
-      .axis path,
-      .axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-      }
+				  position: absolute;           
+				  text-align: center;           
+				  width: 120px;                  
+				  height: 60px;                 
+				  padding: 2px;	             
+				  font: 12px sans-serif;        
+				  background: #C0C0C0;   
+				  border: 0px;      
+				  border-radius: 8px;           
+				  pointer-events: none;         
+			}
+			.chart {
+				shape-rendering: crispEdges;
+			}
 
-      .bar {
-        fill: steelblue;
-      }
+			text {
+				font-weight: strong;
+				font: 10px sans-serif;
+				
+			}
+			
+			path.domain { 
+			  fill: none; 
+			  stroke: black; 
+			  stroke-width: 1; 
+			} 
 
-      .x.axis path {
-        display: none;
-      }
-
+			.label{
+				font: 15px sans-serif;
+				font-weight: strong
+			}
+		
     </style>
     <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
 
@@ -56,10 +59,10 @@
       <div class="navbar-inner">
         <div class="container-fluid">
           <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </button>
           <a class="brand" href="#">Avaaj Otalo Visualization</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
@@ -71,34 +74,269 @@
         </div>
       </div>
     </div>
-<div class="navbar">
-  <div class="navbar-inner">
-
-        <ul class="nav">
-            <li class="active"><a href="#">All</a></li>
-            <li><a href="#">Brinjal</a></li>
-            <li><a href="#">Castor</a></li>
-            <li><a href="#">Chilli</a></li>
-            <li><a href="#">Cotton</a></li>
-            <li><a href="#">Cumin</a></li>
-            <li><a href="#">Garlic</a></li>
-            <li><a href="#">Gram</a></li>
-            <li><a href="#">Groundnut</a></li>
-            <li><a href="#">Maize</a></li>
-            <li><a href="#">Mustard</a></li>
-            <li><a href="#">Onion</a></li>
-            <li><a href="#">Paddy</a></li>
-            <li><a href="#">Wheat</a></li>      </ul>
-    </div>
-  </div>
+	<br/><br/><br/><br/>
         
-            <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span9">
-          <div class="hero-unit">
+    
+        	<div class="navbar">
+  				<div class="navbar-inner">
+
+			        <ul class="nav">
+			            <li class="active"><a href="#">All</a></li>
+			            <li><a href="#">Brinjal</a></li>
+			            <li><a href="#">Castor</a></li>
+			            <li><a href="#">Chilli</a></li>
+			            <li><a href="#">Cotton</a></li>
+			            <li><a href="#">Cumin</a></li>
+			            <li><a href="#">Garlic</a></li>
+			            <li><a href="#">Gram</a></li>
+			            <li><a href="#">Groundnut</a></li>
+			            <li><a href="#">Maize</a></li>
+			            <li><a href="#">Mustard</a></li>
+			            <li><a href="#">Onion</a></li>
+			            <li><a href="#">Paddy</a></li>
+			            <li><a href="#">Wheat</a></li>      </ul>
+			    </div>
+  			</div>
+        	
+    <div class="container-fluid">
+    <div class="row-fluid">
+
+        <div class="span9"> 
+    	</div>
+
+        <script type="text/javascript">
+		
+			var ddata=bars;
+			var actualW=820;
+        	var w=800;
+        	var h=600;
+        	var extendedH=650;
+        	var padding=20;
+        	var barPadding=1;
+			var svg=d3.selectAll(".span9")
+					  .append("svg")
+					  .attr("width",actualW)
+				 	  .attr("height",extendedH);
+				 	
+			var barWidth=(w-padding)/ddata.length-barPadding;
+			console.log(barWidth);
+			startdate=d3.min(ddata,function(d){
+				return new Date(d['date'])	
+			});
+		    enddate=d3.max(ddata,function(d){
+				return new Date(d['date'])
+			});
+			
+			//Creating the scales
+			var timescale=d3.time.scale()
+								.domain([startdate,enddate]).nice()
+								.range([padding,w+padding]);		
+
+			var sessionscale=d3.scale.linear()
+							  .domain([d3.min(ddata,function(d){ 
+							  				sessions=parseInt(d['sessions']);
+							  				return sessions; 
+							  			}),d3.max(ddata,function(d){ 
+							  					sessions=parseInt(d['sessions']);
+							  					return sessions; } ) ] )
+							  .range([h-padding,padding]);
+
+			var colorScale=d3.scale.linear()
+							.domain([d3.min(ddata,function(d){return parseInt(d['duration'])}),
+									d3.max(ddata,function(d){return parseInt(d['duration'])})
+									])
+							.range(["#75B7CF", "#00114F"])
+							.interpolate(d3.interpolateLab);
+						
+			//Binding the data with the g and text elements
+			var i=0;
+			var cropData=[];
+			var cropfilter=function(crop){
+				for(i=0;i<ddata.length;i++){
+					rec=ddata[i];
+					if(rec['crops'].indexOf(crop)!=-1){
+						cropData.push(rec)
+					
+					}
+				}
+				return cropData;
+			}
+			
+			//Main Crop Chart
+			var barChart=svg.selectAll("g")
+					.data(cropfilter("Cumin"))
+					.enter()
+					.append("g");
+
+			barChart.append("rect")
+					.attr({
+					"x":function(d,i){
+						relX=padding+i*(barWidth+barPadding);
+						return relX;
+					},
+					"y":function(d){
+						sessions=sessionscale(parseInt(d['sessions']));
+						return sessions;
+					},			
+					
+					"height":function(d){
+						sessions=sessionscale(parseInt(d['sessions']));
+						return h-padding-sessions;
+					},
+					"fill": function(d) {
+						//color=Math.round(colorScale(parseInt(d['duration'])));
+    				  	//return "rgb("+String(256-color)+","+String(128-color)+",256)";
+    				  	return colorScale(parseInt(d['duration']));
+
+					},
+					"width":barWidth,
+					opacity:1
+				});		
+
+			//Tooltip on mouse over
+			var div=d3.select("body").append("div")
+            .attr("class","tooltip")
+            .style("opacity",0);
+
+            var cropdat=svg.append("text")
+            .attr({
+
+            	"x":w/2-padding-100,
+            	"y":20
+            })
+            .style({
+            	"opacity":0,
+            	"wordWrap":"break-word"
+
+            })
+
+			barChart.on("mouseover",function(d){
+				d3.select(this)
+				.select("rect")
+				.transition()
+				.attr({
+					"width":15,
+					"fill":"black"
+				});
+				div.transition()
+					.style("opacity",.9)
+				div.html(
+					"Duration: "+d['duration']+" s, Sessions: "+d['sessions']+"<br/>"
+					+"Time: "+d['date'])
+					.style("left",(d3.event.pageX)+"px")
+					.style("top",(d3.event.pageY)+"px");
+				})
+			.on("mouseout",function(){
+				d3.select(this)
+				.select("rect")
+				.transition()
+				.attr({
+					"width":barWidth,
+					"fill": function(d) {
+						//color=Math.round(colorScale(parseInt(d['duration'])));
+    				  	//return "rgb("+String(256-color)+","+String(128-color)+",256)";
+    				  	return colorScale(parseInt(d['duration']));
+					}
+				})
+				div.transition()
+				.duration(500)
+				.style("opacity",0)
+				
+			})
+			.on("click",function(d){
+				cropdat.text(d['crops'])
+				.transition()
+				.duration(500)
+				.style("opacity",1)
+			})
+			
+			//Creatng the baseline chart
+			var baseChart=svg.selectAll("g")
+					.data(ddata)
+					.enter()
+					.append("g");
+
+			baseChart.append("rect")
+					.attr({
+					"x":function(d,i){
+						relX=padding+i*(barWidth+barPadding);
+						return relX;
+					},
+					"y":function(d){
+						sessions=sessionscale(parseInt(d['sessions']));
+						return sessions;
+					},			
+					
+					"height":function(d){
+						sessions=sessionscale(parseInt(d['sessions']));
+						return h-padding-sessions;
+					},
+					"fill": "lightsteelblue",
+					"width":barWidth,
+					opacity:1
+				});		
+
+				
+			
+			//Creating the axes
+		    var xAxis = d3.svg.axis()
+                  .scale(timescale)
+                  .orient("bottom")
+               	  .ticks(d3.time.weeks,4)
+                  .tickFormat(d3.time.format("Week %W, %y"));
+                             
             
-          </div>
-        </div><!--/span-->
+            var yAxis = d3.svg.axis()
+            	.scale(sessionscale) 
+               	.tickSize(0,0,0)
+               	.ticks(5) 
+            	.orient("right");
+               	
+
+           
+			 //Adding the X-axis
+			XaxisGroup=svg.append("g")
+					.attr("transform","translate(0,"+(h-padding)+")")
+					.call(xAxis);
+
+			XaxisGroup.selectAll("text")						
+					.style("class","axistext")
+					.attr({
+						"transform":"rotate(-10)"
+					})
+					
+			svg.append("text")
+			.attr("class","x label")
+			.attr("text-anchor","end")
+			.attr("x",w/2)
+			.attr("y",extendedH)
+			.text("Weeks");
+
+			svg.append("text")
+		    .attr("class", "y label")
+		    .attr("text-anchor", "end")
+		    .attr("y", 6)
+		    .attr("dy", ".75em")
+		    .attr("transform", "rotate(-90)")
+		    .text("No. of sessions");
+
+					
+			YaxisGroup=svg.append("g")
+					.attr("transform","translate("+padding+",0)")
+					.call(yAxis);	
+
+			YaxisGroup.selectAll("text")						
+					.style("class","axistext")
+					.attr({
+						"transform":"rotate(-10)"
+					})
+
+
+			console.log(cropData)
+			console.log(ddata)
+	</script>
+          
+     
       
       <div class="span3">
         <script >
