@@ -5,7 +5,7 @@
 		<title>Visualize-AO</title>
 		<!--<h1 class="small">Number of calls made per week from August 2011-September 2012</h1>-->
 		<script type="text/javascript" src="d3/d3.v3.js"></script>
-		<script type="text/javascript" src="barData1.json"></script>
+		<script type="text/javascript" src="barData2.json"></script>
 		<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
 		<link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
 		<style type="text/css">
@@ -27,17 +27,21 @@
 			}
 
 			text {
-				
-				font: 8px sans-serif;
+				font-weight: strong;
+				font: 10px sans-serif;
 				
 			}
 			
-			path .domain { 
+			path.domain { 
 			  fill: none; 
 			  stroke: black; 
 			  stroke-width: 1; 
 			} 
 
+			.label{
+				font: 15px sans-serif;
+				font-weight: strong
+			}
 		</style>
 	</head>
 
@@ -45,24 +49,26 @@
 		<script type="text/javascript">
 		
 			var ddata=bars;
+			var actualW=1200;
         	var w=800;
         	var h=600;
-        	var padding=10;
+        	var extendedH=650;
+        	var padding=20;
         	var barPadding=1;
 			var svg=d3.select("body")
 					  .append("svg")
-					  .attr("width",w)
-				 	  .attr("height",h);
+					  .attr("width",actualW)
+				 	  .attr("height",extendedH);
 				 	
-
-			var barWidth=(w/ddata.length);
+			var barWidth=(w-padding)/ddata.length-barPadding;
+			console.log(barWidth);
 			startdate=d3.min(ddata,function(d){
-				return new Date(d['date'])
+				return new Date(d['date'])	
 			});
 		    enddate=d3.max(ddata,function(d){
 				return new Date(d['date'])
 			});
-			console.log(startdate,enddate);
+			
 			//Creating the scales
 			var timescale=d3.time.scale()
 								.domain([startdate,enddate]).nice()
@@ -70,10 +76,10 @@
 
 			var sessionscale=d3.scale.linear()
 							  .domain([d3.min(ddata,function(d){ 
-							  				sessions=parseInt(d['sessions'])/7;
+							  				sessions=parseInt(d['sessions']);
 							  				return sessions; 
 							  			}),d3.max(ddata,function(d){ 
-							  					sessions=parseInt(d['sessions'])//7;
+							  					sessions=parseInt(d['sessions']);
 							  					return sessions; } ) ] )
 							  .range([h-padding,padding]);
 
@@ -82,43 +88,6 @@
 									d3.max(ddata,function(d){return parseInt(d['duration'])})
 									])
 							.range([0,256]);
-
-
-			//Creating the axes
-		    var xAxis = d3.svg.axis()
-                  .scale(timescale)
-                  .orient("bottom")
-                  .ticks(d3.time.weeks,1)
-                  .ticks(0);
-                  //.tickSubdivide(5)
-                  //.tickSize(6,3,0)
-                  //.tickPadding(1)
-              	  //.tickFormat(d3.time.format,"%W");
-           
-                  
-            
-            var yAxis = d3.svg.axis()
-            	.scale(sessionscale) 
-            	.ticks(0,1)               
-            	.tickSize(1)
-            	.orient("left");
-
-           
-			 //Adding the X-axis
-			XaxisGroup=svg.append("g")
-					.attr("transform","translate(0,"+(h-padding)+")")
-					.call(xAxis);
-
-			XaxisGroup.selectAll("text")						
-					.style("class","axistext")
-					.attr({
-						//"transform":"rotate(-10)"
-					});
-			YaxisGroup=svg.append("g")
-					.attr("transform","translate("+padding+",0)")
-					.call(yAxis);	
-
-
 			
 			//Binding the data with the g and text elements
 			var barChart=svg.selectAll("g")
@@ -129,23 +98,23 @@
 			barChart.append("rect")
 					.attr({
 					"x":function(d,i){
-						return (i*10)+(w/ddata.length);
+						relX=padding+i*(barWidth+barPadding);
+						return relX;
 					},
 					"y":function(d){
-						console.log(d['sessions'])
-						sessions=parseInt(d['sessions'])/7;
-						return h-padding-sessions;
+						sessions=sessionscale(parseInt(d['sessions']));
+						return sessions;
 					},			
 					
-					"height":function(d,i){
-						sessions=parseInt(d['sessions'])/7;
-						return sessions;
+					"height":function(d){
+						sessions=sessionscale(parseInt(d['sessions']));
+						return h-padding-sessions;
 					},
 					"fill": function(d) {
 						color=Math.round(colorScale(parseInt(d['duration'])));
     				  	return "rgb("+String(color)+",100,0)";
 					},
-					"width":(w/ddata.length)+barPadding,
+					"width":barWidth,
 					opacity:1
 				});		
 
@@ -154,14 +123,20 @@
             .attr("class","tooltip")
             .style("opacity",0);
 
+            var cropdat=svg.append("text")
+            .attr({
+            	"x":w-padding,
+            	"y":h/2
+            })
+            .style("opacity",0)
 
 			barChart.on("mouseover",function(d){
 				d3.select(this)
 				.select("rect")
 				.transition()
 				.attr({
-					"width":20,
-					"fill":"#CD5555"
+					"width":15,
+					"fill":"yellow"
 				});
 				div.transition()
 					.style("opacity",.9)
@@ -176,7 +151,7 @@
 				.select("rect")
 				.transition()
 				.attr({
-					"width":(w/ddata.length)+barPadding,
+					"width":barWidth,
 					"fill": function(d) {
 						color=Math.round(colorScale(parseInt(d['duration'])));
     				  	return "rgb("+String(color)+",100,0)";
@@ -187,9 +162,67 @@
 				.style("opacity",0)
 				
 			})
+			.on("click",function(d){
+				cropdat.text(d['crops'])
+				.transition()
+				.duration(500)
+				.style("opacity",1)
+			})
 			
+			//Creating the axes
+		    var xAxis = d3.svg.axis()
+                  .scale(timescale)
+                  .orient("bottom")
+               	  .ticks(d3.time.weeks,4)
+                  .tickFormat(d3.time.format("Week %W, %y"));
+                             
+            
+            var yAxis = d3.svg.axis()
+            	.scale(sessionscale) 
+               	.tickSize(0,0,0)
+               	.ticks(3) 
+            	.orient("right");
+               	
 
-			
+           
+			 //Adding the X-axis
+			XaxisGroup=svg.append("g")
+					.attr("transform","translate(0,"+(h-padding)+")")
+					.call(xAxis);
+
+			XaxisGroup.selectAll("text")						
+					.style("class","axistext")
+					.attr({
+						"transform":"rotate(-10)"
+					})
+					
+			svg.append("text")
+			.attr("class","x label")
+			.attr("text-anchor","end")
+			.attr("x",w/2)
+			.attr("y",extendedH)
+			.text("Weeks");
+
+			svg.append("text")
+		    .attr("class", "y label")
+		    .attr("text-anchor", "end")
+		    .attr("y", 6)
+		    .attr("dy", ".75em")
+		    .attr("transform", "rotate(-90)")
+		    .text("No. of sessions");
+
+					
+			YaxisGroup=svg.append("g")
+					.attr("transform","translate("+padding+",0)")
+					.call(yAxis);	
+
+			YaxisGroup.selectAll("text")						
+					.style("class","axistext")
+					.attr({
+						"transform":"rotate(-10)"
+					})
+
+
 			
 	</script>
 	</body>
