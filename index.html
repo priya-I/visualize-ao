@@ -8,6 +8,8 @@
     <meta name="author" content="">
     <script type="text/javascript" src="d3/d3.v3.js"></script>
 	<script type="text/javascript" src="barData2.json"></script>
+	<script type="text/javascript" src="data/finaldata.json"></script>
+	<script type="text/javascript" src="javascripts/underscore-min.js"></script>
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
 
     <!-- Le styles -->
@@ -106,11 +108,12 @@
 
         <script type="text/javascript">
 		
+			var crop="All";
 			var ddata=bars;
 			var actualW=820;
+			var extendedH=650;
         	var w=800;
         	var h=600;
-        	var extendedH=650;
         	var padding=20;
         	var barPadding=1;
 			var svg=d3.selectAll(".span9")
@@ -119,7 +122,7 @@
 				 	  .attr("height",extendedH);
 				 	
 			var barWidth=(w-padding)/ddata.length-barPadding;
-			console.log(barWidth);
+			
 			startdate=d3.min(ddata,function(d){
 				return new Date(d['date'])	
 			});
@@ -127,24 +130,41 @@
 				return new Date(d['date'])
 			});
 			
+
+			//TO-DO
+			//Bar - Priya
+			//--Find min and max of sessions per week
+			//--Find the min and max average of duration
+			//--Get the crop variable from button 
+			//-----Get sessions and durations for those crops
+
+			//Group by week
+			//count the number of sessions, durations and total
+			var weekno=0;
+			var barData=_.groupBy(ddata,function(ddata){
+				return ddata['weekno'];
+			});
+			
+			barData=_.sortBy(barData,function(barData){
+				return barData['year'];
+			})
+			console.log(barData);
+			//Donut - Seema
+			//--Get crops, subtopics and average duration 
+			//----Crop: {Pests:(total_duration,count),Fertilizers:(total_duration,count)}
+
+			
 			//Creating the scales
 			var timescale=d3.time.scale()
 								.domain([startdate,enddate]).nice()
 								.range([padding,w+padding]);		
 
 			var sessionscale=d3.scale.linear()
-							  .domain([d3.min(ddata,function(d){ 
-							  				sessions=parseInt(d['sessions']);
-							  				return sessions; 
-							  			}),d3.max(ddata,function(d){ 
-							  					sessions=parseInt(d['sessions']);
-							  					return sessions; } ) ] )
+							  .domain([minSession,maxSession])
 							  .range([h-padding,padding]);
 
 			var colorScale=d3.scale.linear()
-							.domain([d3.min(ddata,function(d){return parseInt(d['duration'])}),
-									d3.max(ddata,function(d){return parseInt(d['duration'])})
-									])
+							.domain([minDuration,maxDuration])
 							.range(["#75B7CF", "#00114F"])
 							.interpolate(d3.interpolateLab);
 						
@@ -154,9 +174,13 @@
 			var cropfilter=function(crop){
 				for(i=0;i<ddata.length;i++){
 					rec=ddata[i];
-					if(rec['crops'].indexOf(crop)!=-1){
-						cropData.push(rec)
-					
+					if(crop=="All"){
+						cropData=ddata;
+					}else{
+						if(rec['crops'].indexOf(crop)!=-1){
+							cropData.push(rec);
+						
+						}
 					}
 				}
 				return cropData;
@@ -164,7 +188,7 @@
 			
 			//Main Crop Chart
 			var barChart=svg.selectAll("g")
-					.data(cropfilter("Cumin"))
+					.data(cropfilter(crop))
 					.enter()
 					.append("g");
 
@@ -271,7 +295,7 @@
 						sessions=sessionscale(parseInt(d['sessions']));
 						return h-padding-sessions;
 					},
-					"fill": "lightsteelblue",
+					"fill": "lightgrey",
 					"width":barWidth,
 					opacity:1
 				});		
@@ -332,8 +356,7 @@
 					})
 
 
-			console.log(cropData)
-			console.log(ddata)
+			
 	</script>
           
      
@@ -387,17 +410,17 @@ var path = svg.selectAll("path")
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="assets/js/jquery.js"></script>
     <script src="assets/js/bootstrap-transition.js"></script>
-    <script src="/assets/js/bootstrap-alert.js"></script>
-    <script src="/assets/js/bootstrap-modal.js"></script>
-    <script src="/assets/js/bootstrap-dropdown.js"></script>
-    <script src="/assets/js/bootstrap-scrollspy.js"></script>
-    <script src="/assets/js/bootstrap-tab.js"></script>
-    <script src="/assets/js/bootstrap-tooltip.js"></script>
-    <script src="/assets/js/bootstrap-popover.js"></script>
-    <script src="/assets/js/bootstrap-button.js"></script>
-    <script src="/assets/js/bootstrap-collapse.js"></script>
-    <script src="/assets/js/bootstrap-carousel.js"></script>
-    <script src="/assets/js/bootstrap-typeahead.js"></script>
+    <script src="assets/js/bootstrap-alert.js"></script>
+    <script src="assets/js/bootstrap-modal.js"></script>
+    <script src="assets/js/bootstrap-dropdown.js"></script>
+    <script src="assets/js/bootstrap-scrollspy.js"></script>
+    <script src="assets/js/bootstrap-tab.js"></script>
+    <script src="assets/js/bootstrap-tooltip.js"></script>
+    <script src="assets/js/bootstrap-popover.js"></script>
+    <script src="assets/js/bootstrap-button.js"></script>
+    <script src="assets/js/bootstrap-collapse.js"></script>
+    <script src="assets/js/bootstrap-carousel.js"></script>
+    <script src="assets/js/bootstrap-typeahead.js"></script>
 
   </body>
 </html>
