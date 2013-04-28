@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Avaaj Otalo Data Visualization</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script type="text/javascript" src="d3/d3.v3.js"></script>
+</head>
+
+
+<body>
+<script type="text/javascript">
+var data = [23, 85, 67, 38, 70]; //dummy, normally much more
+labellist = ['label1','label2','label3','label4','label5'];
+
+var w = 815,
+    h = 500,
+    labelpad = 165,
+    x = d3.scale.linear().domain([0, 100]).range([0, w]),
+    y = d3.scale.ordinal().domain(d3.range(data.length)).rangeBands([0, h], .2);
+
+bars = vis.selectAll("g.bar")
+    .data(data);
+
+bars.enter().append("svg:g")
+    .attr("class", "bar")
+    .append("svg:rect");
+
+bars.transition().duration(500)
+    .attr("transform", function(d, i) { 
+         return "translate(" + labelpad + "," + y(i) + ")"; 
+     })
+    .selectAll("svg:rect")
+    .attr("width", x)
+    .attr("height", y.rangeBand())
+;
+
+bars.exit().transition().duration(500)
+    .selectAll("svg:rect")
+    .attr("height", 0)
+    .remove();
+    </script>
+</body>
+</html>
