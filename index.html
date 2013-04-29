@@ -20,6 +20,7 @@
 	<script type="text/javascript" src="paddy.json"></script>
 	<script type="text/javascript" src="wheat.json"></script>
 	<script type="text/javascript" src="cumin.json"></script>
+	<script type="text/javascript" src="data/finaldata.json"></script>
 	<script type="text/javascript" src="javascripts/underscore-min.js"></script>
 	<link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
 
@@ -115,8 +116,8 @@
 
         <script type="text/javascript">
         	var alldata=All;
-			var actualW=820;
-			var extendedH=650;
+			var actualW=900;
+			var extendedH=700;
 	        var w=800;
 	        var h=600;
 	        var padding=20;
@@ -180,37 +181,18 @@
 			cropMap["paddy"]=Paddy
 			cropMap["wheat"]=Wheat
 			cropMap["maize"]=Maize
+			var cropname='all';
 			var ddata=All;
-		//	plot(ddata)
 			d3.selectAll("a")
 			.on("click",function(d){
 				crop=d3.select(this).attr("id")
-				ddata=cropMap[crop]
-				barChart//.exit()
-				.transition().duration(500)
-    			.selectAll("rect")
-    			.attr("height",0)
-    			.remove();
-				//changeBars(ddata);
-			})
-
-			function changeBars(cropdata){
-				//console.log(barChart)
-				barChart.exit().transition().duration(500)
-    			.selectAll("rect")
-    			.attr("height",0)
-    			.remove();	
-
-				barChart=svg.selectAll("#main g")
-						.data(cropdata);
-
-				barChart.select("#main g")
-					.append("rect")
-					
- 				//barChart.enter().append("rect")
-				barChart.select("rect")
-						.transition().duration(500)
-						.attr({
+				cropname=crop
+				change(cropname)
+				cropdata=cropMap[crop]
+				barChart.data(cropdata)
+				.select("rect")
+				.transition().duration(2000).delay(200)
+				.attr({
 						"x":function(d,i){
 							relX=padding+i*(barWidth+barPadding);
 							return relX;
@@ -229,23 +211,19 @@
 						},
 						"width":barWidth,
 						opacity:1
-					});				
-				console.log(cropdata)
-				console.log(barChart)
-			}
+					});		
+			
+			})
 
-			//function plot(cropdata){
-				
-				//Binding the data with the g and text elements
-				//Creatng the baseline chart
-				baseChart=svg.selectAll("#base g")
-						.data(alldata)
-						.enter()
-						.append("g")
-						.attr("class","base");					
+		
+			baseChart=svg.selectAll("#base g")
+					.data(alldata)
+					.enter()
+					.append("g")
+					.attr("class","base");					
 
-				baseChart.append("rect")
-						.attr({
+			baseChart.append("rect")
+					.attr({
 						"x":function(d,i){
 							relX=padding+i*(barWidth+barPadding);
 							return relX;
@@ -358,8 +336,8 @@
 			    var xAxis = d3.svg.axis()
 	                  .scale(timescale)
 	                  .orient("bottom")
-	               	//  .ticks(d3.time.weeks,4)
-	               	  .ticks(0)
+	               	  .ticks(d3.time.weeks,4)
+	               	  //.ticks(0)
 	                  .tickFormat(d3.time.format("Week %W, %y"));
 	                             
 	            
@@ -412,16 +390,38 @@
 	</script>
 
 	<div class="span3">
+        
+       
         <script >
-        var dataset = {
-  			apples: [53245, 28479, 19697, 24037, 40245],
-		};
+
+	        var topicdata=cropstop
+			var donutdata=_.groupBy(topicdata, function(d){
+				//var retval=[]
+				if(cropname=='all'){
+					if(d['topic']!=""){
+						return d['topic'];
+					}
+				}else if(d['crop'].toLowerCase()==cropname.toLowerCase()){
+					if(d['topic']!=""){
+						return [d['crop'],d['topic']];
+					}
+				}
+				//return retval;
+			});
+
+			
+	        var dataset=[];
+	        var i=0;
+	        for (i=1;i<_.values(donutdata).length; i++){
+	        	dataset[_.keys(donutdata)[i]]= _.values(donutdata)[i].length;
+	        }
+
 
 		var width = 360,
 		    height = 300,
 		    radius = 150;
 
-		var color = d3.scale.category20();
+		var color = d3.scale.category10();
 
 		var pie = d3.layout.pie()
 		    .sort(null);
@@ -437,10 +437,57 @@
 		    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
 		var path = svg.selectAll("path")
-		    .data(pie(dataset.apples))
-		  .enter().append("path")
+		    .data(pie(_.values(dataset)))
+		  	.enter().append("path")
 		    .attr("fill", function(d, i) { return color(i); })
-		    .attr("d", arc);
+		    .attr("d", arc)
+		    .style('opacity', 0.6)
+		    .each(function(d){this._current=d;});    
+
+			
+			function change(cropname) {
+				topicdata=cropstop
+				donutdata=_.groupBy(topicdata, function(d){
+					//var retval=[]
+					if(cropname=='all'){
+						return d['topic'];
+					}else if(d['crop'].toLowerCase()==cropname.toLowerCase()){
+						return [d['crop'],d['topic']];
+					}
+					//return retval;
+				});
+
+				dataset=[];
+		        
+		        for (i=1;i<_.values(donutdata).length; i++){
+		        	dataset[_.keys(donutdata)[i]]= _.values(donutdata)[i].length;
+		        }
+		        console.log(dataset)
+	            path = path.data(pie(_.values(dataset))); // update the data
+			    //path.transition().ease("elastic").duration(750).attrTween("d", arcTween); // redraw the arcs
+			     path.transition().ease("elastic").duration(750)
+			     .attr("fill", function(d, i) { return color(i); })
+		    	.attr("d", arc)
+		    	.style('opacity', 0.6);
+			}
+
+			// Store the displayed angles in _current.
+			// Then, interpolate from _current to the new angles.
+			// During the transition, _current is updated in-place by d3.interpolate.
+			function arcTween(a) {
+				console.log(this._current)
+			  	var i = d3.interpolate(this._current, a);
+			  	this._current = i(0);
+			 	 return function(t) {
+			 		   return arc(i(t));
+				  };
+			}
+
+		/*  path.append("text")
+		      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+		      .attr("dy", ".35em")
+		      .style("text-anchor", "middle")
+		      .text(function(d) { return dataset; });*/
     </script>
 
         

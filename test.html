@@ -7,40 +7,503 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <script type="text/javascript" src="d3/d3.v3.js"></script>
-</head>
+    <script type="text/javascript" src="barData2.json"></script>
+    <script type="text/javascript" src="cotton.json"></script>
+    <script type="text/javascript" src="castor.json"></script>
+    <script type="text/javascript" src="brinjal.json"></script>
+    <script type="text/javascript" src="chilli.json"></script>
+    <script type="text/javascript" src="garlic.json"></script>
+    <script type="text/javascript" src="gram.json"></script>
+    <script type="text/javascript" src="maize.json"></script>
+    <script type="text/javascript" src="mustard.json"></script>
+    <script type="text/javascript" src="onion.json"></script>
+    <script type="text/javascript" src="paddy.json"></script>
+    <script type="text/javascript" src="wheat.json"></script>
+    <script type="text/javascript" src="cumin.json"></script>
+    <script type="text/javascript" src="javascripts/underscore-min.js"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
+
+    <!-- Le styles -->
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+        <style type="text/css">
+            div.tooltip {   
+
+                  position: absolute;           
+                  text-align: center;           
+                  width: 120px;                  
+                  height: 60px;                 
+                  padding: 2px;              
+                  font: 12px sans-serif;        
+                  background: #C0C0C0;   
+                  border: 0px;      
+                  border-radius: 8px;           
+                  pointer-events: none;         
+            }
+            .chart {
+                shape-rendering: crispEdges;
+            }
+
+            text {
+                font-weight: strong;
+                font: 10px sans-serif;
+                
+            }
+            
+            path.domain { 
+              fill: none; 
+              stroke: black; 
+              stroke-width: 1; 
+            } 
+
+            .label{
+                font: 15px sans-serif;
+                font-weight: strong
+            }
+        
+    </style>
+    <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
 
 
-<body>
-<script type="text/javascript">
-var data = [23, 85, 67, 38, 70]; //dummy, normally much more
-labellist = ['label1','label2','label3','label4','label5'];
+  </head>
 
-var w = 815,
-    h = 500,
-    labelpad = 165,
-    x = d3.scale.linear().domain([0, 100]).range([0, w]),
-    y = d3.scale.ordinal().domain(d3.range(data.length)).rangeBands([0, h], .2);
+  <body>
 
-bars = vis.selectAll("g.bar")
-    .data(data);
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </button>
+          <a class="brand" href="#">Avaaj Otalo Visualization</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Visualization</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    <br/><br/><br/><br/>
+        
+    
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <ul class="nav">                        
+                        <li class="active"><a id="all" href="#">All</a></li>
+                        <li><a id="brinjal" href="#">Brinjal</a></li>
+                        <li><a id="castor" href="#">Castor</a></li>
+                        <li><a id="chilli" href="#">Chilli</a></li>
+                        <li><a id="cotton" href="#">Cotton</a></li>
+                        <li><a id="cumin" href="#">Cumin</a></li>
+                        <li><a id="garlic" href="#">Garlic</a></li>
+                        <li><a id="gram" href="#">Gram</a></li>
+                        <li><a id="maize" href="#">Maize</a></li>
+                        <li><a id="mustard" href="#">Mustard</a></li>
+                        <li><a id="onion" href="#">Onion</a></li>
+                        <li><a id="paddy" href="#">Paddy</a></li>
+                        <li><a id="wheat" href="#">Wheat</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+    <div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span9"> 
+        </div>
 
-bars.enter().append("svg:g")
-    .attr("class", "bar")
-    .append("svg:rect");
+        <script type="text/javascript">
+            var alldata=All;
+            var actualW=900;
+            var extendedH=700;
+            var w=800;
+            var h=600;
+            var padding=20;
+            var barPadding=1;
+            var svg=d3.selectAll(".span9")
+                          .append("svg")
+                          .attr("width",actualW)
+                          .attr("height",extendedH);
+                        
+            var barWidth=(w-padding)/alldata.length-barPadding;
+                
+            var startdate=d3.min(alldata,function(d){
+                    return new Date(d['ddate']);
+            });
+            
+            var enddate=d3.max(alldata,function(d){
+                return new Date(d['ddate']);
+            });
+                
+            var minSess=d3.min(alldata,function(d){
+                return parseInt(d['sessions']);
+            })
 
-bars.transition().duration(500)
-    .attr("transform", function(d, i) { 
-         return "translate(" + labelpad + "," + y(i) + ")"; 
-     })
-    .selectAll("svg:rect")
-    .attr("width", x)
-    .attr("height", y.rangeBand())
-;
+            var maxSess=d3.max(alldata,function(d){
+                return parseInt(d['sessions']);
+            })
 
-bars.exit().transition().duration(500)
-    .selectAll("svg:rect")
-    .attr("height", 0)
-    .remove();
+            var minDur=d3.min(alldata,function(d){
+                return parseInt(d['duration']);
+            })
+
+            var maxDur=d3.max(alldata,function(d){
+                return parseInt(d['duration']);
+            })
+            
+            //Creating the scales
+            var timescale=d3.time.scale()
+                        .domain([startdate,enddate]).nice()
+                        .range([padding,w+padding]);        
+
+            var sessionscale=d3.scale.linear()
+                          .domain([minSess,maxSess])
+                          .range([h-padding,padding]);
+
+            var colorScale=d3.scale.linear()
+                            .domain([minDur,maxDur])
+                            .range(["#75B7CF", "#00114F"])
+                            .interpolate(d3.interpolateLab);
+
+            var cropMap=[]
+            cropMap["cotton"]=Cotton
+            cropMap["all"]=All
+            cropMap["brinjal"]=Brinjal
+            cropMap["castor"]=Castor
+            cropMap["chilli"]=Chilli
+            cropMap["cumin"]=Cumin
+            cropMap["gram"]=Gram
+            cropMap["garlic"]=Garlic
+            cropMap["mustard"]=Mustard
+            cropMap["onion"]=Onion
+            cropMap["paddy"]=Paddy
+            cropMap["wheat"]=Wheat
+            cropMap["maize"]=Maize
+            var ddata=All;
+        //  plot(ddata)
+            d3.selectAll("a")
+            .on("click",function(d){
+                crop=d3.select(this).attr("id")
+                cropdata=cropMap[crop]
+                barWidth=(w-padding)/alldata.length-barPadding;
+                
+                startdate=d3.min(cropdata,function(d){
+                    return new Date(d['ddate']);
+            });
+            
+                enddate=d3.max(cropdata,function(d){
+                return new Date(d['ddate']);
+            });
+                
+                minSess=d3.min(cropdata,function(d){
+                return parseInt(d['sessions']);
+            })
+
+                maxSess=d3.max(cropdata,function(d){
+                return parseInt(d['sessions']);
+            })
+
+                minDur=d3.min(cropdata,function(d){
+                return parseInt(d['duration']);
+            })
+
+            maxDur=d3.max(cropdata,function(d){
+                return parseInt(d['duration']);
+            })
+            
+            //Creating the scales
+             timescale=d3.time.scale()
+                        .domain([startdate,enddate]).nice()
+                        .range([padding,w+padding]);        
+
+             sessionscale=d3.scale.linear()
+                          .domain([minSess,maxSess])
+                          .range([h-padding,padding]);
+
+             colorScale=d3.scale.linear()
+                            .domain([minDur,maxDur])
+                            .range(["#75B7CF", "#00114F"])
+                            .interpolate(d3.interpolateLab);
+
+
+                barChart.data(cropdata)
+                .select("rect")
+                .transition().duration(2000).delay(200)
+                .attr({
+                        "x":function(d,i){
+                            relX=padding+i*(barWidth+barPadding);
+                            return relX;
+                        },
+                        "y":function(d){
+                            sessions=sessionscale(parseInt(d['sessions']));
+                            return sessions;
+                        },          
+                        
+                        "height":function(d){
+                            sessions=sessionscale(parseInt(d['sessions']));
+                            return h-padding-sessions;
+                        },
+                        "fill": function(d) {
+                            return colorScale(parseInt(d['duration']));
+                        },
+                        "width":barWidth,
+                        opacity:1
+                    });     
+                //changeBars(ddata);
+            })
+
+            function changeBars(cropdata){
+                //console.log(barChart)
+                /*barChart.exit().transition().duration(500)
+                .selectAll("rect")
+                .attr("height",0)
+                .remove();  */
+
+                barChart=svg.selectAll("#main g")
+                        .data(cropdata);
+
+                barChart.select("#main g")
+                    .append("rect");
+                    
+                //barChart.enter().append("rect")
+                barChart.select("rect")
+                        .transition().duration(500)
+                        .attr({
+                        "x":function(d,i){
+                            relX=padding+i*(barWidth+barPadding);
+                            return relX;
+                        },
+                        "y":function(d){
+                            sessions=sessionscale(parseInt(d['sessions']));
+                            return sessions;
+                        },          
+                        
+                        "height":function(d){
+                            sessions=sessionscale(parseInt(d['sessions']));
+                            return h-padding-sessions;
+                        },
+                        "fill": function(d) {
+                            return colorScale(parseInt(d['duration']));
+                        },
+                        "width":barWidth,
+                        opacity:1
+                    });             
+                console.log(cropdata)
+                console.log(barChart)
+            }
+
+            //function plot(cropdata){
+                
+               
+
+
+                //Main Crop Chart
+                barChart=svg.selectAll("#main g")
+                        .data(ddata);
+
+                barChart.enter()
+                    .append("g")
+                    .attr("class","main")
+                    .append("rect")
+                    
+                //barChart.enter().append("rect")
+                barChart.select("rect")
+                        .transition().duration(500)
+                        .attr({
+                        "x":function(d,i){
+                            relX=padding+i*(barWidth+barPadding);
+                            return relX;
+                        },
+                        "y":function(d){
+                            sessions=sessionscale(parseInt(d['sessions']));
+                            return sessions;
+                        },          
+                        
+                        "height":function(d){
+                            sessions=sessionscale(parseInt(d['sessions']));
+                            return h-padding-sessions;
+                        },
+                        "fill": function(d) {
+                            return colorScale(parseInt(d['duration']));
+                        },
+                        "width":barWidth,
+                        opacity:1
+                    });     
+
+                //Tooltip on mouse over
+                var div=d3.select("body").append("div")
+                .attr("class","tooltip")
+                .style("opacity",0);
+
+                cropdat=svg.append("text")
+                .attr({
+
+                    "x":w/2-padding-100,
+                    "y":20
+                })
+                .style({
+                    "opacity":0,
+                    "wordWrap":"break-word"
+
+                })
+
+                barChart.on("mouseover",function(d){
+                    d3.select(this)
+                    .select("rect")
+                    .transition()
+                    .attr({
+                        "width":15,
+                        "fill":"black"
+                    });
+                    div.transition()
+                        .style("opacity",.9)
+                    div.html(
+                        "Duration: "+d['duration']+" s, Sessions: "+d['sessions']+"<br/>"
+                        +"Time: "+d['date'])
+                        .style("left",(d3.event.pageX)+"px")
+                        .style("top",(d3.event.pageY)+"px");
+                    })
+                .on("mouseout",function(){
+                    d3.select(this)
+                    .select("rect")
+                    .transition()
+                    .attr({
+                        "width":barWidth,
+                        "fill": function(d) {
+                            return colorScale(parseInt(d['duration']));
+                        }
+                    })
+                    div.transition()
+                    .duration(500)
+                    .style("opacity",0)
+                    
+                })
+                .on("click",function(d){
+                    cropdat.text(d['crops'])
+                    .transition()
+                    .duration(500)
+                    .style("opacity",1)
+                })
+                
+            
+                //Creating the axes
+                var xAxis = d3.svg.axis()
+                      .scale(timescale)
+                      .orient("bottom")
+                      //.ticks(d3.time.weeks,4)
+                      //.ticks(0)
+                      .tickFormat(d3.time.format("Week %W, %y"));
+                                 
+                
+                var yAxis = d3.svg.axis()
+                    .scale(sessionscale) 
+                    .tickSize(0,0,0)
+                    .ticks(5) 
+                    .orient("right");
+                               
+                 //Adding the X-axis
+                XaxisGroup=svg.append("g")
+                        .attr("transform","translate(0,"+(h-padding)+")")
+                        .call(xAxis);
+
+                XaxisGroup.selectAll("text")                        
+                        .style("class","axistext")
+                        .attr({
+                            "transform":"rotate(-10)"
+                        })
+                        
+                svg.append("text")
+                .attr("class","x label")
+                .attr("text-anchor","end")
+                .attr("x",w/2)
+                .attr("y",extendedH)
+                .text("Weeks");
+
+                svg.append("text")
+                .attr("class", "y label")
+                .attr("text-anchor", "end")
+                .attr("y", 6)
+                .attr("dy", ".75em")
+                .attr("transform", "rotate(-90)")
+                .text("No. of sessions");
+
+                YaxisGroup=svg.append("g")
+                        .attr("transform","translate("+padding+",0)")
+                        .call(yAxis);   
+
+                YaxisGroup.selectAll("text")                        
+                        .style("class","axistext")
+                        .attr({
+                            "transform":"rotate(-10)"
+                        })
+
+    //      }
+
+
+            
     </script>
-</body>
+
+    <div class="span3">
+        <script >
+        var dataset = {
+            apples: [53245, 28479, 19697, 24037, 40245],
+        };
+
+        var width = 360,
+            height = 300,
+            radius = 150;
+
+        var color = d3.scale.category20();
+
+        var pie = d3.layout.pie()
+            .sort(null);
+
+        var arc = d3.svg.arc()
+            .innerRadius(radius - 100)
+            .outerRadius(radius - 50);
+
+        var svg = d3.selectAll(".span3").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        var path = svg.selectAll("path")
+            .data(pie(dataset.apples))
+          .enter().append("path")
+            .attr("fill", function(d, i) { return color(i); })
+            .attr("d", arc);
+    </script>
+
+        
+    </div><!--/span-->
+    </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Info 247 Avaaj Otalo Team </p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap-transition.js"></script>
+    <script src="assets/js/bootstrap-alert.js"></script>
+    <script src="assets/js/bootstrap-modal.js"></script>
+    <script src="assets/js/bootstrap-dropdown.js"></script>
+    <script src="assets/js/bootstrap-scrollspy.js"></script>
+    <script src="assets/js/bootstrap-tab.js"></script>
+    <script src="assets/js/bootstrap-tooltip.js"></script>
+    <script src="assets/js/bootstrap-popover.js"></script>
+    <script src="assets/js/bootstrap-button.js"></script>
+    <script src="assets/js/bootstrap-collapse.js"></script>
+    <script src="assets/js/bootstrap-carousel.js"></script>
+    <script src="assets/js/bootstrap-typeahead.js"></script>
+
+  </body>
 </html>

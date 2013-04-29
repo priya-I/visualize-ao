@@ -1,4 +1,4 @@
-bars=[
+cropstop=[
 {"uid":1038001,"treatment":2,"sessid":1313747106,"date":"8/19/11","forumid":"Questions and Answers","messageforumid":3820,"crop":"","topic":"","messagedate":"8/18/11","duration":47,"educ":9,"village":"TAJPAR","age":38,"weekno":34,"year":2011},
 {"uid":1038001,"treatment":2,"sessid":1313747106,"date":"8/19/11","forumid":"Questions and Answers","messageforumid":3779,"crop":"Cotton","topic":"Pests","messagedate":"8/18/11","duration":26,"educ":9,"village":"TAJPAR","age":38,"weekno":34,"year":2011},
 {"uid":1038001,"treatment":2,"sessid":1313747106,"date":"8/19/11","forumid":"Questions and Answers","messageforumid":3784,"crop":"Cotton","topic":"Fertilizers/Bio-organic","messagedate":"8/18/11","duration":80,"educ":9,"village":"TAJPAR","age":38,"weekno":34,"year":2011},
