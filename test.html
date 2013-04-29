@@ -20,6 +20,7 @@
     <script type="text/javascript" src="paddy.json"></script>
     <script type="text/javascript" src="wheat.json"></script>
     <script type="text/javascript" src="cumin.json"></script>
+    <script type="text/javascript" src="data/finaldata.json"></script>
     <script type="text/javascript" src="javascripts/underscore-min.js"></script>
     <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
 
@@ -154,7 +155,7 @@
             
             //Creating the scales
             var timescale=d3.time.scale()
-                        .domain([startdate,enddate]).nice()
+                        .domain([startdate,enddate])
                         .range([padding,w+padding]);        
 
             var sessionscale=d3.scale.linear()
@@ -163,7 +164,7 @@
 
             var colorScale=d3.scale.linear()
                             .domain([minDur,maxDur])
-                            .range(["#75B7CF", "#00114F"])
+                            .range(["#FFEC8B", "#FF3300"])
                             .interpolate(d3.interpolateLab);
 
             var cropMap=[]
@@ -180,124 +181,9 @@
             cropMap["paddy"]=Paddy
             cropMap["wheat"]=Wheat
             cropMap["maize"]=Maize
+            var cropname='all';
             var ddata=All;
-        //  plot(ddata)
-            d3.selectAll("a")
-            .on("click",function(d){
-                crop=d3.select(this).attr("id")
-                cropdata=cropMap[crop]
-                barWidth=(w-padding)/alldata.length-barPadding;
-                
-                startdate=d3.min(cropdata,function(d){
-                    return new Date(d['ddate']);
-            });
-            
-                enddate=d3.max(cropdata,function(d){
-                return new Date(d['ddate']);
-            });
-                
-                minSess=d3.min(cropdata,function(d){
-                return parseInt(d['sessions']);
-            })
-
-                maxSess=d3.max(cropdata,function(d){
-                return parseInt(d['sessions']);
-            })
-
-                minDur=d3.min(cropdata,function(d){
-                return parseInt(d['duration']);
-            })
-
-            maxDur=d3.max(cropdata,function(d){
-                return parseInt(d['duration']);
-            })
-            
-            //Creating the scales
-             timescale=d3.time.scale()
-                        .domain([startdate,enddate]).nice()
-                        .range([padding,w+padding]);        
-
-             sessionscale=d3.scale.linear()
-                          .domain([minSess,maxSess])
-                          .range([h-padding,padding]);
-
-             colorScale=d3.scale.linear()
-                            .domain([minDur,maxDur])
-                            .range(["#75B7CF", "#00114F"])
-                            .interpolate(d3.interpolateLab);
-
-
-                barChart.data(cropdata)
-                .select("rect")
-                .transition().duration(2000).delay(200)
-                .attr({
-                        "x":function(d,i){
-                            relX=padding+i*(barWidth+barPadding);
-                            return relX;
-                        },
-                        "y":function(d){
-                            sessions=sessionscale(parseInt(d['sessions']));
-                            return sessions;
-                        },          
-                        
-                        "height":function(d){
-                            sessions=sessionscale(parseInt(d['sessions']));
-                            return h-padding-sessions;
-                        },
-                        "fill": function(d) {
-                            return colorScale(parseInt(d['duration']));
-                        },
-                        "width":barWidth,
-                        opacity:1
-                    });     
-                //changeBars(ddata);
-            })
-
-            function changeBars(cropdata){
-                //console.log(barChart)
-                /*barChart.exit().transition().duration(500)
-                .selectAll("rect")
-                .attr("height",0)
-                .remove();  */
-
-                barChart=svg.selectAll("#main g")
-                        .data(cropdata);
-
-                barChart.select("#main g")
-                    .append("rect");
-                    
-                //barChart.enter().append("rect")
-                barChart.select("rect")
-                        .transition().duration(500)
-                        .attr({
-                        "x":function(d,i){
-                            relX=padding+i*(barWidth+barPadding);
-                            return relX;
-                        },
-                        "y":function(d){
-                            sessions=sessionscale(parseInt(d['sessions']));
-                            return sessions;
-                        },          
-                        
-                        "height":function(d){
-                            sessions=sessionscale(parseInt(d['sessions']));
-                            return h-padding-sessions;
-                        },
-                        "fill": function(d) {
-                            return colorScale(parseInt(d['duration']));
-                        },
-                        "width":barWidth,
-                        opacity:1
-                    });             
-                console.log(cropdata)
-                console.log(barChart)
-            }
-
-            //function plot(cropdata){
-                
-               
-
-
+     
                 //Main Crop Chart
                 barChart=svg.selectAll("#main g")
                         .data(ddata);
@@ -390,10 +276,10 @@
                 //Creating the axes
                 var xAxis = d3.svg.axis()
                       .scale(timescale)
-                      .orient("bottom")
+                      .orient("bottom");
                       //.ticks(d3.time.weeks,4)
-                      //.ticks(0)
-                      .tickFormat(d3.time.format("Week %W, %y"));
+                      
+                    //  .tickFormat(d3.time.format("Week %W, %y"));
                                  
                 
                 var yAxis = d3.svg.axis()
@@ -404,6 +290,7 @@
                                
                  //Adding the X-axis
                 XaxisGroup=svg.append("g")
+                        .attr("class","xaxis")
                         .attr("transform","translate(0,"+(h-padding)+")")
                         .call(xAxis);
 
@@ -424,11 +311,12 @@
                 .attr("class", "y label")
                 .attr("text-anchor", "end")
                 .attr("y", 6)
-                .attr("dy", ".75em")
+                .attr("dy", ".45em")
                 .attr("transform", "rotate(-90)")
                 .text("No. of sessions");
 
                 YaxisGroup=svg.append("g")
+                        .attr("class","yaxis")
                         .attr("transform","translate("+padding+",0)")
                         .call(yAxis);   
 
@@ -438,42 +326,49 @@
                             "transform":"rotate(-10)"
                         })
 
-    //      }
+            d3.selectAll("a")
+            .on("click",function(d){
+                crop=d3.select(this).attr("id")
+                cropdata=cropMap[crop]
+                minSess=d3.min(cropdata,function(d){
+                    return parseInt(d['sessions']);
+                })
 
-
+                maxSess=d3.max(cropdata,function(d){
+                    return parseInt(d['sessions']);
+                })
+                sessionscale.domain([minSess,maxSess]);
+                svg.select(".yaxis").transition().duration(2000).call(yAxis)
+                newChart=barChart.data(cropdata)
+                .select("rect")
+                .transition().duration(2000).delay(200)
+                .attr({
+                        "x":function(d,i){
+                            relX=padding+i*(barWidth+barPadding);
+                            return relX;
+                        },
+                        "y":function(d){
+                            sessions=sessionscale(parseInt(d['sessions']));
+                            return sessions;
+                        },          
+                        
+                        "height":function(d){
+                            sessions=sessionscale(parseInt(d['sessions']));
+                            return h-padding-sessions;
+                        },
+                        "fill": function(d) {
+                            return colorScale(parseInt(d['duration']));
+                        },
+                       
+                    });     
+                     
+                newChart.exit().transition().duration(500)
+                .selectAll("svg:rect")
+                .attr("height", 0)
+                .remove();   
+                            
+            })
             
-    </script>
-
-    <div class="span3">
-        <script >
-        var dataset = {
-            apples: [53245, 28479, 19697, 24037, 40245],
-        };
-
-        var width = 360,
-            height = 300,
-            radius = 150;
-
-        var color = d3.scale.category20();
-
-        var pie = d3.layout.pie()
-            .sort(null);
-
-        var arc = d3.svg.arc()
-            .innerRadius(radius - 100)
-            .outerRadius(radius - 50);
-
-        var svg = d3.selectAll(".span3").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-        var path = svg.selectAll("path")
-            .data(pie(dataset.apples))
-          .enter().append("path")
-            .attr("fill", function(d, i) { return color(i); })
-            .attr("d", arc);
     </script>
 
         

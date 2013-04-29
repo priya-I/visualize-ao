@@ -164,7 +164,7 @@
 
 			var colorScale=d3.scale.linear()
 							.domain([minDur,maxDur])
-							.range(["#75B7CF", "#00114F"])
+							.range(["#FFEC8B", "#FF3300"])
 							.interpolate(d3.interpolateLab);
 
 			var cropMap=[]
@@ -183,39 +183,7 @@
 			cropMap["maize"]=Maize
 			var cropname='all';
 			var ddata=All;
-			d3.selectAll("a")
-			.on("click",function(d){
-				crop=d3.select(this).attr("id")
-				cropname=crop
-				change(cropname)
-				cropdata=cropMap[crop]
-				barChart.data(cropdata)
-				.select("rect")
-				.transition().duration(2000).delay(200)
-				.attr({
-						"x":function(d,i){
-							relX=padding+i*(barWidth+barPadding);
-							return relX;
-						},
-						"y":function(d){
-							sessions=sessionscale(parseInt(d['sessions']));
-							return sessions;
-						},			
-						
-						"height":function(d){
-							sessions=sessionscale(parseInt(d['sessions']));
-							return h-padding-sessions;
-						},
-						"fill": function(d) {
-						  	return colorScale(parseInt(d['duration']));
-						},
-						"width":barWidth,
-						opacity:1
-					});		
-			
-			})
-
-		
+				
 			baseChart=svg.selectAll("#base g")
 					.data(alldata)
 					.enter()
@@ -381,11 +349,39 @@
 						.style("class","axistext")
 						.attr({
 							"transform":"rotate(-10)"
-						})
+					})
 
-	//		}
-
-
+			d3.selectAll("a")
+			.on("click",function(d){
+				crop=d3.select(this).attr("id")
+				cropname=crop
+				change(cropname)
+				cropdata=cropMap[crop]
+				barChart.data(cropdata)
+				.select("rect")
+				.transition().duration(2000).delay(200)
+				.attr({
+						"x":function(d,i){
+							relX=padding+i*(barWidth+barPadding);
+							return relX;
+						},
+						"y":function(d){
+							sessions=sessionscale(parseInt(d['sessions']));
+							return sessions;
+						},			
+						
+						"height":function(d){
+							sessions=sessionscale(parseInt(d['sessions']));
+							return h-padding-sessions;
+						},
+						"fill": function(d) {
+						  	return colorScale(parseInt(d['duration']));
+						},
+						"width":barWidth,
+						opacity:1
+					});		
+			
+			})
 			
 	</script>
 
