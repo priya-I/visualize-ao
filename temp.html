@@ -3,23 +3,60 @@
   <head>
     <meta charset="utf-8">
     <title>Avaaj Otalo Data Visualization</title>
+    <script type="text/javascript" src="d3/d3.v3.js"></script>
+    <script type="text/javascript" src="data/finaldata.json"></script>
+   <style>
    
+   </style>
   </head>
 
   <body>
     <script type="text/javascript">
-    var svg=d3.append("svg")
-            .attr("width",800)
-            .attr("height",600);
-    var circle = svg.selectAll("circle")
-    .data([32, 57, 293], String);
+    donutExtract();
+     function donutExtract(){
+                var sDonut=[];
+                var dDonut=[];
+                var donutdata=cropstop;
+                
+                for(i=0;i<donutdata.length;i++){
+                    name=donutdata[i]['crop'];
+                    if(sDonut[name]==null){
+                      sDonut[name]=[0,0,0,0];
 
-    circle.enter().append("circle")
-        .attr("cy", 90)
-        .attr("cx", String)
-        .attr("r", Math.sqrt);
-    
-    circle.exit().remove();
+                    }else{
+                      if(donutdata[i]['forumid']=="Radio"){
+                        sDonut[name][0]+=1;
+                      }else if(donutdata[i]['forumid']=="Questions and Answers"){
+                        sDonut[name][1]+=1;
+                      }else if(donutdata[i]['forumid']=="Experience Sharing"){
+                        sDonut[name][2]+=1;
+                      }else if(donutdata[i]['forumid']=="Announcements"){
+                        sDonut[name][3]+=1;
+                      }
+                    }
+                }
+                console.log(sDonut);
+
+                for(i=0;i<donutdata.length;i++){
+                    name=donutdata[i]['crop'];
+                    if(dDonut[name]==null){
+                      dDonut[name]=[0,0,0,0];
+                    
+                    }else{
+                      durations=donutdata[i]['duration'];
+                      if(donutdata[i]['forumid']=="Radio"){
+                        dDonut[name][0]+=durations;
+                      }else if(donutdata[i]['forumid']=="Questions and Answers"){
+                        dDonut[name][1]+=durations;
+                      }else if(donutdata[i]['forumid']=="Experience Sharing"){
+                        dDonut[name][2]+=durations;
+                      }else if(donutdata[i]['forumid']=="Announcements"){
+                        dDonut[name][3]+=durations;
+                      }
+                    }
+                }
+                console.log(dDonut);
+            }
     </script>
   </body>
 </html>
