@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+ <!--[if lte IE 8]>
+     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
+ <![endif]-->
     <script type="text/javascript" src="d3/d3.v3.js"></script>
     <script type="text/javascript" src="barData2.json"></script>
     <script type="text/javascript" src="cotton.json"></script>
@@ -60,6 +64,10 @@
                 font: 15px sans-serif;
                 font-weight: strong
             }
+            #map { 
+              height: 380px;
+              width: 300px; 
+            }
         
     </style>
     <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
@@ -93,18 +101,18 @@
                 <div class="navbar-inner">
                     <ul class="nav">                        
                         <li class="active"><a id="all" href="#">All</a></li>
-                        <li><a id="brinjal" href="#">Brinjal</a></li>
-                        <li><a id="castor" href="#">Castor</a></li>
-                        <li><a id="chilli" href="#">Chilli</a></li>
-                        <li><a id="cotton" href="#">Cotton</a></li>
-                        <li><a id="cumin" href="#">Cumin</a></li>
-                        <li><a id="garlic" href="#">Garlic</a></li>
-                        <li><a id="gram" href="#">Gram</a></li>
-                        <li><a id="maize" href="#">Maize</a></li>
-                        <li><a id="mustard" href="#">Mustard</a></li>
-                        <li><a id="onion" href="#">Onion</a></li>
-                        <li><a id="paddy" href="#">Paddy</a></li>
-                        <li><a id="wheat" href="#">Wheat</a></li>
+                        <li><a class="cropbuttons" id="brinjal" href="#">Brinjal</a></li>
+                        <li><a class="cropbuttons" id="castor" href="#">Castor</a></li>
+                        <li><a class="cropbuttons" id="chilli" href="#">Chilli</a></li>
+                        <li><a class="cropbuttons" id="cotton" href="#">Cotton</a></li>
+                        <li><a class="cropbuttons" id="cumin" href="#">Cumin</a></li>
+                        <li><a class="cropbuttons" id="garlic" href="#">Garlic</a></li>
+                        <li><a class="cropbuttons" id="gram" href="#">Gram</a></li>
+                        <li><a class="cropbuttons" id="maize" href="#">Maize</a></li>
+                        <li><a class="cropbuttons" id="mustard" href="#">Mustard</a></li>
+                        <li><a class="cropbuttons" id="onion" href="#">Onion</a></li>
+                        <li><a class="cropbuttons" id="paddy" href="#">Paddy</a></li>
+                        <li><a class="cropbuttons" id="wheat" href="#">Wheat</a></li>
                     </ul>
                 </div>
             </div>
@@ -113,269 +121,280 @@
     <div class="row-fluid">
         <div class="span9"> 
         </div>
+    <div class="span3">
+      <div class="span6">
+      <div class ="donut1"></div>
+      </div>
+    <div class="span6">
+      <div class ="donut2">
+      </div>
+    </div>
+    </div>
+<script>
 
-        <script type="text/javascript">
-            var alldata=All;
-            var actualW=900;
-            var extendedH=700;
-            var w=800;
-            var h=600;
-            var padding=20;
-            var barPadding=1;
-            var svg=d3.selectAll(".span9")
-                          .append("svg")
-                          .attr("width",actualW)
-                          .attr("height",extendedH);
-                        
-            var barWidth=(w-padding)/alldata.length-barPadding;
-                
-            var startdate=new Date(alldata[0]['date'])
-            
-            var enddate=new Date(alldata[alldata.length-1]['date'])
-                
-            var minSess=d3.min(alldata,function(d){
-                return parseInt(d['sessions']);
-            })
+//calculate dataset
+var sessdataset= {
+    banana:[0,0,9],
+    brinjal:[67,0,1578],
+    castor:[36,45,3269],
+    chilli:[95,7,1175],
+    cotton:[1016,1435,46961],
+    cumin:[179,101,6045],
+    garlic:[18,0,66],
+    gram:[19,0,111],
+    groundnut:[19,0,1799],
+    maize:[9,0,42],
+    millet:[13,0,553],
+    mustard:[0,0,124],
+    onion:[71,0,557],
+    other:[865,1088,13302],
+    paddy:[0,0,231],
+    papaya:[0,0,9],
+    sesame:[13,0,277],
+    sorghum:[3,0,160],
+    tobacco:[0,0,35],
+    wheat:[35,71,1903],
+    all:[18218,5493,94809]
+};
 
-            var maxSess=d3.max(alldata,function(d){
-                return parseInt(d['sessions']);
-            })
+var durdataset= {
+    banana:[0,0,9],
+    brinjal:[67,0,1578],
+    castor:[36,45,3269],
+    chilli:[95,7,1175],
+    cotton:[1016,1435,46961],
+    cumin:[179,101,6045],
+    garlic:[18,0,66],
+    gram:[19,0,111],
+    groundnut:[19,0,1799],
+    maize:[9,0,42],
+    millet:[13,0,553],
+    mustard:[0,0,124],
+    onion:[71,0,557],
+    other:[865,1088,13302],
+    paddy:[0,0,231],
+    papaya:[0,0,9],
+    sesame:[13,0,277],
+    sorghum:[3,0,160],
+    tobacco:[0,0,35],
+    wheat:[35,71,1903],
+    all:[18218,5493,94809]
+};
 
-            var minDur=d3.min(alldata,function(d){
-                return parseInt(d['duration']);
-            })
+/*
+var dataset = {
+  cumin: [53245, 28479, 19697, 24037, 40245],
+  brinjal: [200, 200, 200, 200, 200]
+};
+*/
+//first donut
+var width = 160,
+    height = 200,
+    radius = Math.min(width, height) / 2;
 
-            var maxDur=d3.max(alldata,function(d){
-                return parseInt(d['duration']);
-            })
-            
-            //Creating the scales
-            var timescale=d3.time.scale()
-                        .domain([startdate,enddate])
-                        .range([padding,w+padding]);        
+var color = d3.scale.category20();
 
-            var sessionscale=d3.scale.linear()
-                          .domain([minSess,maxSess])
-                          .range([h-padding,padding]);
+var pie = d3.layout.pie()
+    .sort(null);
 
-            var colorScale=d3.scale.linear()
-                            .domain([minDur,maxDur])
-                            .range(["#FFEC8B", "#FF3300"])
-                            .interpolate(d3.interpolateLab);
+var arc = d3.svg.arc()
+    .innerRadius(radius - 50)
+    .outerRadius(radius - 20);
 
-            var cropMap=[]
-            cropMap["cotton"]=Cotton
-            cropMap["all"]=All
-            cropMap["brinjal"]=Brinjal
-            cropMap["castor"]=Castor
-            cropMap["chilli"]=Chilli
-            cropMap["cumin"]=Cumin
-            cropMap["gram"]=Gram
-            cropMap["garlic"]=Garlic
-            cropMap["mustard"]=Mustard
-            cropMap["onion"]=Onion
-            cropMap["paddy"]=Paddy
-            cropMap["wheat"]=Wheat
-            cropMap["maize"]=Maize
-            var cropname='all';
-            var ddata=All;
-              ddata=_.sortBy(ddata,function(d){
-                return new Date(d['date']);
-            });
-     
-                //Main Crop Chart
-                barChart=svg.selectAll("#main g")
-                        .data(ddata);
+var svg = d3.select(".donut1").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-                barChart.enter()
-                    .append("g")
-                    .attr("class","main")
-                    .append("rect")
-                    
-                //barChart.enter().append("rect")
-                barChart.select("rect")
-                        .transition().duration(500)
-                        .attr({
-                        "x":function(d,i){
-                            relX=padding+i*(barWidth+barPadding);
-                            return relX;
-                        },
-                        "y":function(d){
-                            sessions=sessionscale(parseInt(d['sessions']));
-                            return sessions;
-                        },          
-                        
-                        "height":function(d){
-                            sessions=sessionscale(parseInt(d['sessions']));
-                            return h-padding-sessions;
-                        },
-                        "fill": function(d) {
-                            return colorScale(parseInt(d['duration']));
-                        },
-                        "width":barWidth,
-                        opacity:1
-                    });     
 
-                //Tooltip on mouse over
-                var div=d3.select("body").append("div")
-                .attr("class","tooltip")
-                .style("opacity",0);
+var path = svg.selectAll("g")
+    .data(pie(sessdataset.all))
+  .enter().append("path")
+    .attr("fill", function(d, i) { return color(i); })
+    .attr("d", arc)
+    .each(function(d) { this._current = d; }); // store the initial values
 
-                cropdat=svg.append("text")
-                .attr({
+d3.selectAll("a").on("click", change);
 
-                    "x":w/2-padding-100,
-                    "y":20
-                })
-                .style({
-                    "opacity":0,
-                    "wordWrap":"break-word"
+//legend
+  var legend = d3.select(".donut1").append("svg")
+      .attr("class", "legend")
+      .attr("width", radius * 2)
+      .attr("height", radius * 2)
+    .selectAll("g")
+      .data(color.domain().slice().reverse())
+    .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
-                })
+  legend.append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
 
-                barChart.on("mouseover",function(d){
-                    d3.select(this)
-                    .select("rect")
-                    .transition()
-                    .attr({
-                        "width":15,
-                        "fill":"black"
-                    });
-                    div.transition()
-                        .style("opacity",.9)
-                    div.html(
-                        "Duration: "+d['duration']+" s, Sessions: "+d['sessions']+"<br/>"
-                        +"Time: "+d['date'])
-                        .style("left",(d3.event.pageX)+"px")
-                        .style("top",(d3.event.pageY)+"px");
-                    })
-                .on("mouseout",function(){
-                    d3.select(this)
-                    .select("rect")
-                    .transition()
-                    .attr({
-                        "width":barWidth,
-                        "fill": function(d) {
-                            return colorScale(parseInt(d['duration']));
-                        }
-                    })
-                    div.transition()
-                    .duration(500)
-                    .style("opacity",0)
-                    
-                })
-                .on("click",function(d){
-                    cropdat.text(d['crops'])
-                    .transition()
-                    .duration(500)
-                    .style("opacity",1)
-                })
-                
-            
-                //Creating the axes
-                var xAxis = d3.svg.axis()
-                      .scale(timescale)
-                      .ticks(10)
-                      .orient("bottom")
-                      .tickFormat(d3.time.format("Week %W, %y"));
-                      //.ticks(d3.time.weeks,4)
-   
-                var yAxis = d3.svg.axis()
-                    .scale(sessionscale) 
-                    .tickSize(0,0,0)
-                    .ticks(5) 
-                    .orient("right");
-                               
-                 //Adding the X-axis
-                XaxisGroup=svg.append("g")
-                        .attr("class","xaxis")
-                        .attr("transform","translate(0,"+(h-padding)+")")
-                        .call(xAxis);
+  legend.append("text")
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .text(function(d,i) { return sessdataset.all[i] });
 
-                XaxisGroup.selectAll("text")                        
-                        .style("class","axistext")
-                        .attr({
-                            "transform":"rotate(-10)"
-                        })
-                        
-                svg.append("text")
-                .attr("class","x label")
-                .attr("text-anchor","end")
-                .attr("x",w/2)
-                .attr("y",extendedH)
-                .text("Weeks");
 
-                svg.append("text")
-                .attr("class", "y label")
-                .attr("text-anchor", "end")
-                .attr("y", 6)
-                .attr("dy", ".45em")
-                .attr("transform", "rotate(-90)")
-                .text("No. of sessions");
+//second donut
 
-                YaxisGroup=svg.append("g")
-                        .attr("class","yaxis")
-                        .attr("transform","translate("+padding+",0)")
-                        .call(yAxis);   
 
-                YaxisGroup.selectAll("text")                        
-                        .style("class","axistext")
-                        .attr({
-                            "transform":"rotate(-10)"
-                        })
+var svg = d3.select(".donut2").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-            d3.selectAll("a")
-            .on("click",function(d){
-                crop=d3.select(this).attr("id")
-                cropdata=cropMap[crop]
-                cropdata=_.sortBy(cropdata,function(d){
-                  return new Date(d['date']);
-               })
-                minSess=d3.min(cropdata,function(d){
-                    return parseInt(d['sessions']);
-                })
 
-                maxSess=d3.max(cropdata,function(d){
-                    return parseInt(d['sessions']);
-                })
-                sessionscale.domain([minSess,maxSess]);
-                svg.select(".yaxis").transition().duration(2000).call(yAxis)
-                newChart=barChart.data(cropdata)
-                .select("rect")
-                .transition().duration(2000).delay(200)
-                .attr({
-                        "x":function(d,i){
-                            relX=padding+i*(barWidth+barPadding);
-                            return relX;
-                        },
-                        "y":function(d){
-                            sessions=sessionscale(parseInt(d['sessions']));
-                            return sessions;
-                        },          
-                        
-                        "height":function(d){
-                            sessions=sessionscale(parseInt(d['sessions']));
-                            return h-padding-sessions;
-                        },
-                        "fill": function(d) {
-                            return colorScale(parseInt(d['duration']));
-                        },
-                       
-                    });     
-                     
-                newChart.exit().transition().duration(500)
-                .selectAll("#main g")
-                .attr("height", 0)
-                .remove();   
-                            
-            })
-            
-    </script>
+var path = svg.selectAll("g")
+    .data(pie(durdataset.all))
+  .enter().append("path")
+    .attr("fill", function(d, i) { return color(i); })
+    .attr("d", arc)
+    .each(function(d) { this._current = d; }); // store the initial values
 
+
+//legend
+  var legend = d3.select(".donut2").append("svg")
+      .attr("class", "legend")
+      .attr("width", radius * 2)
+      .attr("height", radius * 2)
+    .selectAll("g")
+      .data(color.domain().slice().reverse())
+    .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .text(function(d,i) { return durdataset.all[i] });
+
+
+
+// transition
+function change() {
+  crop=d3.select(this).attr("id");
+    console.log(crop);
+  path = path.data(pie(sessdataset[crop])); // update the data
+  console.log(pie(sessdataset[crop]));
+  console.log(arcTween);
+  path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
+
+
+
+  //change circles on the map
+  L.removeLayer(cities);
+  //drawcircle(villagedata[cropname],crop);
+}
+
+// Store the displayed angles in _current.
+// Then, interpolate from _current to the new angles.
+// During the transition, _current is updated in-place by d3.interpolate.
+function arcTween(a) {
+  var i = d3.interpolate(this._current, a);
+  this._current = i(0);
+  return function(t) {
+    return arc(i(t));
+  };
+
+
+}
+
+
+
+</script>
         
-    </div><!--/span-->
     </div><!--/row-->
+    <div class="row-fluid">
 
+    <div class="span9">
+    </div>
+    <div class="span3">
+       <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+ <div id="map"> 
+  <script>
+  var map = L.map('map').setView([22, 70.089], 6);
+  var cropname='castor';
+  var villagedata={
+    "brinjal":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":9},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":14}
+              ],
+    "castor":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              {"village":"BHADUKA","lat":22.545035,"longi": 71.478483,"calls":34},
+              {"village":"BHETSUDA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BHIMORA","lat":21.63536,"longi": 70.15079,"calls":76},
+              {"village":"CHIRODA","lat":21.35686,"longi": 71.692178,"calls":34},
+              {"village":"DHAJALA","lat":22.37237,"longi":71.413609,"calls":247},
+              {"village":"DHAMRASLA","lat":21.80964,"longi": 73.13478,"calls":261},
+              {"village":"DHANDHALPUR","lat":22.383333,"longi": 71.35,"calls":132},
+              {"village":"HIRASAR","lat":22.386017,"longi":71.233221,"calls":7},
+              {"village":"KANDHASAR","lat":22.43210,"longi":71.26515,"calls":44},
+              {"village":"KHERANA","lat":22.42865,"longi":71.1456,"calls":151},
+              {"village":"LAKHCHOKIYA","lat":26.18322,"longi":91.74549,"calls":19},
+              {"village":"MOKASAR","lat":22.34661,"longi": 71.20984,"calls":3},
+              {"village":"MOTA KANGHASAR","lat":22.43210,"longi":71.26515,"calls":143},
+              {"village":"NANI MORSAL","lat":22.71792,"longi":82.38922,"calls":9},
+              {"village":"PANCHAVADA","lat":21.68543,"longi":71.88998,"calls":7},
+              {"village":"PIPLIYA","lat":21.75274,"longi": 71.91494,"calls":238},
+              {"village":"RAJAVAD","lat":22.70201,"longi": 70.74502,"calls":45},
+              {"village":"SANGANI","lat":22.04352,"longi": 70.86699,"calls":35},
+              {"village":"SANOSARA","lat":21.73000,"longi": 71.76000,"calls":16},
+              {"village":"SURAI","lat":22.42291,"longi": 71.19617,"calls":143},
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":7},
+
+
+              ],
+
+            
+          };
+
+  var vilcropdata=villagedata[cropname];
+
+  console.log(vilcropdata);
+
+  L.tileLayer('http://{s}.tile.cloudmade.com/9b98fefe8bfa40bca037ecb1e48c7b36/64082/256/{z}/{x}/{y}.png', {
+    attribution:'',
+    maxZoom: 18
+}).addTo(map);
+  drawcircle(villagedata[cropname],'castor');
+var cities=[];
+var circles=[];
+
+  function drawcircle(vilcropdata,cropselected){
+    var i;
+     for(i=0;i<vilcropdata.length;i++)
+     {
+        var circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*50,{
+          color: 'red',
+          fillColor: '#f03',
+          fillOpacity: 0.4
+      }).addTo(map);
+        circle.bindPopup(vilcropdata[i].village);
+        circles.push(circle);
+
+        cities = L.layerGroup(circles);
+    }
+    }
+
+  
+
+
+  </script>
+    </div><!--map span-->
+    </div><!--/row-->
       <hr>
 
       <footer>
