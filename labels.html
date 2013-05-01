@@ -65,8 +65,8 @@
                 font-weight: strong
             }
             #map { 
-              height: 680px;
-              width: 600px; 
+              height: 480px;
+              width: 500px; 
             }
         
     </style>
@@ -119,10 +119,10 @@
             
     <div class="container-fluid">
     <div class="row-fluid">
-        <div class="span9"> 
+        <div class="span6"> 
         </div>
 
-<div class="span3">
+<div class="span6">
   <div class="span6">
   <div class ="donut1">
   </div>
@@ -190,8 +190,8 @@ var dataset = {
 };
 */
 //first donut
-var width = 160,
-    height = 200,
+var width = 260,
+    height = 300,
     radius = Math.min(width, height) / 2;
 
 var color = d3.scale.category20();
@@ -328,13 +328,13 @@ function arcTween(a) {
     </div><!--/row-->
     <div class="row-fluid">
 
-    <div class="span9">
+    <div class="span6">
     </div>
-    <div class="span3">
+    <div class="span6">
        <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
  <div id="map"> 
   <script>
-  var map = L.map('map').setView([22, 70.089], 6);
+  var map = L.map('map').setView([23, 71], 7);
   var cropname='castor';
   var villagedata={
     "brinjal":[
