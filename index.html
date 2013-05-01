@@ -116,6 +116,7 @@
     <div class="container-fluid">
     <div class="row-fluid">
         <div class="span6 bars">
+         
        <!--     <div class="span6"></div>
             <div class="span6">
             <form action="">
@@ -126,14 +127,89 @@
             </div><!--span6-->
         </div><!--span6 bars-->
 
-        <div class="span6">
+       <div class="span6"><!--Map goes in this span-->
+            <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+            <div id="map"> 
+            <script>
+            var map = L.map('map').setView([23, 71], 7);
+            var cropname='castor';
+            var villagedata={
+            "brinjal":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":9},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              ],
+            "castor":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              {"village":"BHADUKA","lat":22.545035,"longi": 71.478483,"calls":34},
+              {"village":"BHETSUDA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BHIMORA","lat":21.63536,"longi": 70.15079,"calls":76},
+              {"village":"CHIRODA","lat":21.35686,"longi": 71.692178,"calls":34},
+              {"village":"DHAJALA","lat":22.37237,"longi":71.413609,"calls":247},
+              {"village":"DHAMRASLA","lat":21.80964,"longi": 73.13478,"calls":261},
+              {"village":"DHANDHALPUR","lat":22.383333,"longi": 71.35,"calls":132},
+              {"village":"HIRASAR","lat":22.386017,"longi":71.233221,"calls":7},
+              {"village":"KANDHASAR","lat":22.43210,"longi":71.26515,"calls":44},
+              {"village":"KHERANA","lat":22.42865,"longi":71.1456,"calls":151},
+              {"village":"LAKHCHOKIYA","lat":26.18322,"longi":91.74549,"calls":19},
+              {"village":"MOKASAR","lat":22.34661,"longi": 71.20984,"calls":3},
+              {"village":"MOTA KANGHASAR","lat":22.43210,"longi":71.26515,"calls":143},
+              {"village":"NANI MORSAL","lat":22.71792,"longi":82.38922,"calls":9},
+              {"village":"PANCHAVADA","lat":21.68543,"longi":71.88998,"calls":7},
+              {"village":"PIPLIYA","lat":21.75274,"longi": 71.91494,"calls":238},
+              {"village":"RAJAVAD","lat":22.70201,"longi": 70.74502,"calls":45},
+              {"village":"SANGANI","lat":22.04352,"longi": 70.86699,"calls":35},
+              {"village":"SANOSARA","lat":21.73000,"longi": 71.76000,"calls":16},
+              {"village":"SURAI","lat":22.42291,"longi": 71.19617,"calls":143},
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":7},
+              ],
+            "chilli":[
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":70},
+              ],
+            };
+
+              L.tileLayer('http://{s}.tile.cloudmade.com/9b98fefe8bfa40bca037ecb1e48c7b36/50323/256/{z}/{x}/{y}.png', {
+                    attribution:'',
+                    maxZoom: 18
+                }).addTo(map);
+
+            var circles=new Array();
+            drawcircle('castor');
+            var cities;
+
+            function drawcircle(cropselected){
+            var i;
+            //L.clearLayers();
+            var vilcropdata = villagedata[cropselected];
+            for(i=0;i<vilcropdata.length;i++){
+                var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*50,{
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.4
+                }).bindPopup(vilcropdata[i].village);
+                circles.push(circle);
+                map.addLayer(circles[i]);
+                //cities = L.layerGroup(circles);
+            }
+        }
+    </script>
+    </div><!--map span-->
+    </div><!--span6-->
+    </div><!--/row-->
+    <div class="row-fluid">
+        <div class="span9">
+        </div>
+        <div class="span3">
             <div class="span6 donut1"> 
-            <label>Sessions</label>  
+                <label>Sessions</label>  
             </div><!--span6-->
             <div class="span6 donut2">
-            <label>Durations</label>
+                <label>Durations</label>
             </div><!--span6-->
-        </div><!--span3-->
+        </div>
+    </div><!--row-->
 
         <script type="text/javascript">
             var sDonut=[];
@@ -238,27 +314,7 @@
 
             //legend
               var labels=["Radio","Questions and Answers","Experience Sharing","Announcements"];
-              var legend1 = d3.select(".donut1").append("svg")
-                  .attr("class", "legend")
-                  .attr("width", pir * 2)
-                  .attr("height", pih * 2)
-                .selectAll("g")
-                  .data(color.domain().slice().reverse())
-                .enter().append("g")
-                  .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-              legend1.append("rect")
-                  .attr("width", 18)
-                  .attr("height", 18)
-                  .style("fill", color);
-
-              legend1.append("text")
-                  .attr("x", 24)
-                  .attr("y", 9)
-                  .attr("dy", ".35em")
-                  .text(function(d,i) { return labels[i] });
-
-
+           
             //second donut
             var svgdonut2 = d3.select(".donut2").append("svg")
                 .attr("width", piw)
@@ -590,13 +646,7 @@
 
 </script>
 
- </div><!--/row-->
-    <div class="row-fluid">
 
-    <div class="span9">
-    </div>
-    
-        </div><!--row-->
 </div><!--container-->
 
 <hr>
