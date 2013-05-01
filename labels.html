@@ -1,63 +1,450 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>D3 testing</title>
-		<script type="text/javascript" src="d3/d3.v3.js"></script>
-		<link rel="stylesheet" type="text/css" href="style.css">
-	</head>
-	<body>
-		<script type="text/javascript">
-		var dataset=[ 25, 17, 15, 26];
+  <head>
+    <meta charset="utf-8">
+    <title>Avaaj Otalo Data Visualization</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+ <!--[if lte IE 8]>
+     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.ie.css" />
+ <![endif]-->
+    <script type="text/javascript" src="d3/d3.v3.js"></script>
+    <script type="text/javascript" src="barData2.json"></script>
+    <script type="text/javascript" src="cotton.json"></script>
+    <script type="text/javascript" src="castor.json"></script>
+    <script type="text/javascript" src="brinjal.json"></script>
+    <script type="text/javascript" src="chilli.json"></script>
+    <script type="text/javascript" src="garlic.json"></script>
+    <script type="text/javascript" src="gram.json"></script>
+    <script type="text/javascript" src="maize.json"></script>
+    <script type="text/javascript" src="mustard.json"></script>
+    <script type="text/javascript" src="onion.json"></script>
+    <script type="text/javascript" src="paddy.json"></script>
+    <script type="text/javascript" src="wheat.json"></script>
+    <script type="text/javascript" src="cumin.json"></script>
+    <script type="text/javascript" src="data/finaldata.json"></script>
+    <script type="text/javascript" src="javascripts/underscore-min.js"></script>
+    <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
+
+    <!-- Le styles -->
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+        <style type="text/css">
+            div.tooltip {   
+
+                  position: absolute;           
+                  text-align: center;           
+                  width: 120px;                  
+                  height: 60px;                 
+                  padding: 2px;              
+                  font: 12px sans-serif;        
+                  background: #C0C0C0;   
+                  border: 0px;      
+                  border-radius: 8px;           
+                  pointer-events: none;         
+            }
+            .chart {
+                shape-rendering: crispEdges;
+            }
+
+            text {
+                font-weight: strong;
+                font: 10px sans-serif;
+                
+            }
+            
+            path.domain { 
+              fill: none; 
+              stroke: black; 
+              stroke-width: 1; 
+            } 
+
+            .label{
+                font: 15px sans-serif;
+                font-weight: strong
+            }
+            #map { 
+              height: 680px;
+              width: 600px; 
+            }
+        
+    </style>
+    <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
 
 
-        var w=500;
-        var h=100;
-		var svg=d3.select("body")
-			.append("svg")
-			.attr("width",w)
-			.attr("height",h);
-			
-		var circles=svg.selectAll("circle")
-		.data(dataset)
-		.enter()
-		.append("circle");
+  </head>
 
-		circles
-		.attr("class","pumpkin")
-		.attr("cx",function(d,i){
-			return (i*50)+50;
-		})
-		.attr("cy",h/2)
-		.attr("r",function(d){
-				return d;
-			})			
-		.attr("fill",function(d){
-			 return "rgb(0, 0, " + (d * 10) + ")";
-		})
-		.attr("opacity",function(d,i){
-			return (i*0.1)+0.2;
-		});
+  <body>
 
-		svg.selectAll("text")
-		.data(dataset)
-		.enter()
-		.append("text")
-		.text(function(d){
-			return d;
-		})
-		.attr({
-			"x":function(d,i){
-				return (i*50)+43;
-			},
-			"y":h/2+5
-		})
-		.style({
-			"font-family":"sans-serif",
-			"font-size":"11px",
-			"fill":"red"
-		})
-		</script>
-		
-	</body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+           <span class="icon-bar"></span>
+         </button>
+          <a class="brand" href="#">Avaaj Otalo Visualization</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Visualization</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+    <br/><br/><br/><br/>
+        
+    
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <ul class="nav">                        
+                        <li class="active"><a id="all" href="#">All</a></li>
+                        <li><a class="cropbuttons" id="brinjal" href="#">Brinjal</a></li>
+                        <li><a class="cropbuttons" id="castor" href="#">Castor</a></li>
+                        <li><a class="cropbuttons" id="chilli" href="#">Chilli</a></li>
+                        <li><a class="cropbuttons" id="cotton" href="#">Cotton</a></li>
+                        <li><a class="cropbuttons" id="cumin" href="#">Cumin</a></li>
+                        <li><a class="cropbuttons" id="garlic" href="#">Garlic</a></li>
+                        <li><a class="cropbuttons" id="gram" href="#">Gram</a></li>
+                        <li><a class="cropbuttons" id="maize" href="#">Maize</a></li>
+                        <li><a class="cropbuttons" id="mustard" href="#">Mustard</a></li>
+                        <li><a class="cropbuttons" id="onion" href="#">Onion</a></li>
+                        <li><a class="cropbuttons" id="paddy" href="#">Paddy</a></li>
+                        <li><a class="cropbuttons" id="wheat" href="#">Wheat</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+    <div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span9"> 
+        </div>
+
+<div class="span3">
+  <div class="span6">
+  <div class ="donut1">
+  </div>
+  </div>
+    <div class="span6">
+  <div class ="donut2">
+  </div>
+  </div>
+</div>
+<script>
+
+//calculate dataset
+var sessdataset= {
+    banana:[0,0,9],
+    brinjal:[67,0,1578],
+    castor:[36,45,3269],
+    chilli:[95,7,1175],
+    cotton:[1016,1435,46961],
+    cumin:[179,101,6045],
+    garlic:[18,0,66],
+    gram:[19,0,111],
+    groundnut:[19,0,1799],
+    maize:[9,0,42],
+    millet:[13,0,553],
+    mustard:[0,0,124],
+    onion:[71,0,557],
+    other:[865,1088,13302],
+    paddy:[0,0,231],
+    papaya:[0,0,9],
+    sesame:[13,0,277],
+    sorghum:[3,0,160],
+    tobacco:[0,0,35],
+    wheat:[35,71,1903],
+    all:[18218,5493,94809]
+};
+
+var durdataset= {
+    banana:[0,0,9],
+    brinjal:[67,0,1578],
+    castor:[36,45,3269],
+    chilli:[95,7,1175],
+    cotton:[1016,1435,46961],
+    cumin:[179,101,6045],
+    garlic:[18,0,66],
+    gram:[19,0,111],
+    groundnut:[19,0,1799],
+    maize:[9,0,42],
+    millet:[13,0,553],
+    mustard:[0,0,124],
+    onion:[71,0,557],
+    other:[865,1088,13302],
+    paddy:[0,0,231],
+    papaya:[0,0,9],
+    sesame:[13,0,277],
+    sorghum:[3,0,160],
+    tobacco:[0,0,35],
+    wheat:[35,71,1903],
+    all:[18218,5493,94809]
+};
+
+/*
+var dataset = {
+  cumin: [53245, 28479, 19697, 24037, 40245],
+  brinjal: [200, 200, 200, 200, 200]
+};
+*/
+//first donut
+var width = 160,
+    height = 200,
+    radius = Math.min(width, height) / 2;
+
+var color = d3.scale.category20();
+
+var pie = d3.layout.pie()
+    .sort(null);
+
+var arc = d3.svg.arc()
+    .innerRadius(radius - 50)
+    .outerRadius(radius - 20);
+
+var svg = d3.select(".donut1").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+
+var path = svg.selectAll("g")
+    .data(pie(sessdataset.all))
+  .enter().append("path")
+    .attr("fill", function(d, i) { return color(i); })
+    .attr("d", arc)
+    .each(function(d) { this._current = d; }); // store the initial values
+
+d3.selectAll("a").on("click", change);
+
+//legend
+  var legend = d3.select(".donut1").append("svg")
+      .attr("class", "legend")
+      .attr("width", radius * 2)
+      .attr("height", radius * 2)
+    .selectAll("g")
+      .data(color.domain().slice().reverse())
+    .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .text(function(d,i) { return sessdataset.all[i] });
+
+
+//second donut
+
+
+var svg = d3.select(".donut2").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+  .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+
+var path = svg.selectAll("g")
+    .data(pie(durdataset.all))
+  .enter().append("path")
+    .attr("fill", function(d, i) { return color(i); })
+    .attr("d", arc)
+    .each(function(d) { this._current = d; }); // store the initial values
+
+
+//legend
+  var legend = d3.select(".donut2").append("svg")
+      .attr("class", "legend")
+      .attr("width", radius * 2)
+      .attr("height", radius * 2)
+    .selectAll("g")
+      .data(color.domain().slice().reverse())
+    .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  legend.append("rect")
+      .attr("width", 18)
+      .attr("height", 18)
+      .style("fill", color);
+
+  legend.append("text")
+      .attr("x", 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .text(function(d,i) { return durdataset.all[i] });
+
+
+
+// transition
+function change() {
+  crop=d3.select(this).attr("id");
+    //console.log(crop);
+  path = path.data(pie(sessdataset[crop])); // update the data
+  ///console.log(pie(sessdataset[crop]));
+  //console.log(arcTween);
+  path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
+
+
+
+  //remove circles on the map
+
+  for(i=0;i<circles.length;i++) {
+    console.log("inside delete for");
+    map.removeLayer(circles[i]);
+    }  
+
+    circles = new Array();
+
+    //add new based on crop selected
+    console.log(crop);
+    drawcircle(crop);
+
+}
+
+// Store the displayed angles in _current.
+// Then, interpolate from _current to the new angles.
+// During the transition, _current is updated in-place by d3.interpolate.
+function arcTween(a) {
+  var i = d3.interpolate(this._current, a);
+  this._current = i(0);
+  return function(t) {
+    return arc(i(t));
+  };
+
+
+}
+
+
+
+</script>
+        
+    </div><!--/row-->
+    <div class="row-fluid">
+
+    <div class="span9">
+    </div>
+    <div class="span3">
+       <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+ <div id="map"> 
+  <script>
+  var map = L.map('map').setView([22, 70.089], 6);
+  var cropname='castor';
+  var villagedata={
+    "brinjal":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":9},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+
+
+              ],
+    "castor":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              {"village":"BHADUKA","lat":22.545035,"longi": 71.478483,"calls":34},
+              {"village":"BHETSUDA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BHIMORA","lat":21.63536,"longi": 70.15079,"calls":76},
+              {"village":"CHIRODA","lat":21.35686,"longi": 71.692178,"calls":34},
+              {"village":"DHAJALA","lat":22.37237,"longi":71.413609,"calls":247},
+              {"village":"DHAMRASLA","lat":21.80964,"longi": 73.13478,"calls":261},
+              {"village":"DHANDHALPUR","lat":22.383333,"longi": 71.35,"calls":132},
+              {"village":"HIRASAR","lat":22.386017,"longi":71.233221,"calls":7},
+              {"village":"KANDHASAR","lat":22.43210,"longi":71.26515,"calls":44},
+              {"village":"KHERANA","lat":22.42865,"longi":71.1456,"calls":151},
+              {"village":"LAKHCHOKIYA","lat":26.18322,"longi":91.74549,"calls":19},
+              {"village":"MOKASAR","lat":22.34661,"longi": 71.20984,"calls":3},
+              {"village":"MOTA KANGHASAR","lat":22.43210,"longi":71.26515,"calls":143},
+              {"village":"NANI MORSAL","lat":22.71792,"longi":82.38922,"calls":9},
+              {"village":"PANCHAVADA","lat":21.68543,"longi":71.88998,"calls":7},
+              {"village":"PIPLIYA","lat":21.75274,"longi": 71.91494,"calls":238},
+              {"village":"RAJAVAD","lat":22.70201,"longi": 70.74502,"calls":45},
+              {"village":"SANGANI","lat":22.04352,"longi": 70.86699,"calls":35},
+              {"village":"SANOSARA","lat":21.73000,"longi": 71.76000,"calls":16},
+              {"village":"SURAI","lat":22.42291,"longi": 71.19617,"calls":143},
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":7},
+
+
+              ],
+    "chilli":[
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":70},
+
+
+              ],
+
+            
+          };
+
+  //var vilcropdata=villagedata[cropname];
+
+  //console.log(vilcropdata);
+
+  L.tileLayer('http://{s}.tile.cloudmade.com/9b98fefe8bfa40bca037ecb1e48c7b36/50323/256/{z}/{x}/{y}.png', {
+    attribution:'',
+    maxZoom: 18
+}).addTo(map);
+
+var circles=new Array();
+drawcircle('castor');
+var cities;
+
+  function drawcircle(cropselected){
+    var i;
+    //L.clearLayers();
+    var vilcropdata = villagedata[cropselected];
+     for(i=0;i<vilcropdata.length;i++)
+     {
+
+        var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*50,{
+          color: 'red',
+          fillColor: '#f03',
+          fillOpacity: 0.4
+      }).bindPopup(vilcropdata[i].village);
+        circles.push(circle);
+        map.addLayer(circles[i]);
+
+        //cities = L.layerGroup(circles);
+    }
+
+    }
+
+
+  
+
+
+  </script>
+    </div><!--map span-->
+    </div><!--/row-->
+      <hr>
+
+      <footer>
+        <p>&copy; Info 247 Avaaj Otalo Team </p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/bootstrap-transition.js"></script>
+    <script src="assets/js/bootstrap-alert.js"></script>
+    <script src="assets/js/bootstrap-modal.js"></script>
+    <script src="assets/js/bootstrap-dropdown.js"></script>
+    <script src="assets/js/bootstrap-scrollspy.js"></script>
+    <script src="assets/js/bootstrap-tab.js"></script>
+    <script src="assets/js/bootstrap-tooltip.js"></script>
+    <script src="assets/js/bootstrap-popover.js"></script>
+    <script src="assets/js/bootstrap-button.js"></script>
+    <script src="assets/js/bootstrap-collapse.js"></script>
+    <script src="assets/js/bootstrap-carousel.js"></script>
+    <script src="assets/js/bootstrap-typeahead.js"></script>
+
+  </body>
 </html>
