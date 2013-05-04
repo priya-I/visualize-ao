@@ -20,7 +20,6 @@
     <script type="text/javascript" src="paddy.json"></script>
     <script type="text/javascript" src="wheat.json"></script>
     <script type="text/javascript" src="cumin.json"></script>
-    <script type="text/javascript" src="villageCalls.json"></script>
     <script type="text/javascript" src="data/finaldata.json"></script>
     <script type="text/javascript" src="javascripts/underscore-min.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
@@ -77,8 +76,8 @@
             }
 
             #map { 
-              height: 400px;
-              width: 400px; 
+              height: 280px;
+              width: 300px; 
             }
 
           #barchart {padding: 10px;}
@@ -92,6 +91,7 @@
               stroke-width: 2;
               fill: none;
             }
+<<<<<<< HEAD
            
           line {
                 stroke: black;
@@ -99,14 +99,31 @@
            
           text.line{
                 font-family: "MuseoSans", "Helvetica Neue", "Lucida Grande", "sans-serif";
-                font-size: 7pt;
+                font-size: 5pt;
             }
 
-          text.info{
-               font-weight: bold;
-               font-size: 10pt;  
+            text.info{
+              position:absolute;
+                        left: 200px;
+                        top:200px;
+                        text-align: center;           
+                        width: 200px;                  
+                        height: 50px;                 
+                        padding: 2px;              
+                        font: 12px sans-serif;        
+                        border: 0px;      
+                        border-radius: 8px;           
+                        pointer-events: none;   
             }
               
+=======
+            
+            .spangrey {
+              background-color: #222222;
+            }
+            
+        
+>>>>>>> 97d43998cd713860a3c3cafcdab8a4f485699394
     </style>
     <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
 
@@ -129,8 +146,6 @@
     </div>
     <br/><br/>
 
-            <div class="navbar">
-                <div class="navbar-inner">
                     <div class="btn-group" data-toggle="buttons-radio">
                      <button class="btn" id="all">All</button>
                      <button class="btn" id="brinjal">Brinjal</button>  
@@ -145,14 +160,15 @@
                      <button class="btn" id="onion">Onion</button>  
                      <button class="btn" id="paddy">Paddy</button>  
                      <button class="btn" id="wheat">Wheat</button>  
-                   </div> 
+                     <button class="btn" id="Data">Data</button>  
 
-                </div><!--navbar-inner-->
-            </div><!--navbar-->
+                   </div>
+
             
     <div class="container-fluid">
       
     <div class="row-fluid">
+<<<<<<< HEAD
 
         <div class="span7 bars" id="barchart">
           </div><!--span7 bars-->
@@ -160,12 +176,177 @@
            
              <div class="row-fluid"> 
             <!--Map goes in this span-->
+=======
+        <div class="span6 bars">
+        <div class = "spangrey"></div>
+         
+       <!--     <div class="span6"></div>
+            <div class="span6">
+            <form action="">
+                <input type="radio" name="year" value="all">All<br>
+                <input type="radio" name="year" value="2011">2011<br>
+                <input type="radio" name="year" value="2012">2012
+            </form>
+            </div><!--span6-->
+        </div><!--span6 bars-->
+         <div class="span6">
+            <div class="span3 donut1 donut2"> 
+                        <div class = "spangrey"></div>
+            </div>
+               
+            <div class="span9"><!--Map goes in this span-->
+                <p><span class="label label-inverse">Map of Gujarat showing where the calls came from</span></p>
+>>>>>>> 97d43998cd713860a3c3cafcdab8a4f485699394
             <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
             <div id="map"> 
             <script>
             var map = L.map('map').setView([23, 71], 7);
             var cropname='all';
-            var villagedata=villageDat;
+            var villagedata={
+            "brinjal":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":9},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              ],
+            "all":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              {"village":"BHADUKA","lat":22.545035,"longi": 71.478483,"calls":34},
+              {"village":"BHETSUDA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BHIMORA","lat":21.63536,"longi": 70.15079,"calls":76},
+              {"village":"CHIRODA","lat":21.35686,"longi": 71.692178,"calls":34},
+              {"village":"DHAJALA","lat":22.37237,"longi":71.413609,"calls":247},
+              {"village":"DHAMRASLA","lat":21.80964,"longi": 73.13478,"calls":261},
+              {"village":"DHANDHALPUR","lat":22.383333,"longi": 71.35,"calls":132},
+              {"village":"HIRASAR","lat":22.386017,"longi":71.233221,"calls":7},
+              {"village":"KANDHASAR","lat":22.43210,"longi":71.26515,"calls":44},
+              {"village":"KHERANA","lat":22.42865,"longi":71.1456,"calls":151},
+              {"village":"LAKHCHOKIYA","lat":26.18322,"longi":91.74549,"calls":19},
+              {"village":"MOKASAR","lat":22.34661,"longi": 71.20984,"calls":3},
+              {"village":"MOTA KANGHASAR","lat":22.43210,"longi":71.26515,"calls":143},
+              {"village":"NANI MORSAL","lat":22.71792,"longi":82.38922,"calls":9},
+              {"village":"PANCHAVADA","lat":21.68543,"longi":71.88998,"calls":7},
+              {"village":"PIPLIYA","lat":21.75274,"longi": 71.91494,"calls":238},
+              {"village":"RAJAVAD","lat":22.70201,"longi": 70.74502,"calls":45},
+              {"village":"SANGANI","lat":22.04352,"longi": 70.86699,"calls":35},
+              {"village":"SANOSARA","lat":21.73000,"longi": 71.76000,"calls":16},
+              {"village":"SURAI","lat":22.42291,"longi": 71.19617,"calls":143},
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":7},
+              ],
+            "chilli":[
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":70},
+              ],
+               "castor":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":9},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              {"village":"BHADUKA","lat":22.545035,"longi": 71.478483,"calls":34},
+              {"village":"BHETSUDA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BHIMORA","lat":21.63536,"longi": 70.15079,"calls":76},
+              {"village":"CHIRODA","lat":21.35686,"longi": 71.692178,"calls":34},
+              {"village":"DHAJALA","lat":22.37237,"longi":71.413609,"calls":247},
+              {"village":"DHAMRASLA","lat":21.80964,"longi": 73.13478,"calls":261},
+              {"village":"DHANDHALPUR","lat":22.383333,"longi": 71.35,"calls":132}
+              ],
+            "cumin":[
+              {"village":"HIRASAR","lat":22.386017,"longi":71.233221,"calls":7},
+              {"village":"KANDHASAR","lat":22.43210,"longi":71.26515,"calls":44},
+              {"village":"KHERANA","lat":22.42865,"longi":71.1456,"calls":151},
+              {"village":"LAKHCHOKIYA","lat":26.18322,"longi":91.74549,"calls":19},
+              {"village":"MOKASAR","lat":22.34661,"longi": 71.20984,"calls":3},
+              {"village":"MOTA KANGHASAR","lat":22.43210,"longi":71.26515,"calls":143},
+              {"village":"NANI MORSAL","lat":22.71792,"longi":82.38922,"calls":9},
+              {"village":"PANCHAVADA","lat":21.68543,"longi":71.88998,"calls":7},
+              {"village":"PIPLIYA","lat":21.75274,"longi": 71.91494,"calls":238},
+              {"village":"RAJAVAD","lat":22.70201,"longi": 70.74502,"calls":45},
+              {"village":"SANGANI","lat":22.04352,"longi": 70.86699,"calls":35},
+              {"village":"SANOSARA","lat":21.73000,"longi": 71.76000,"calls":16},
+              {"village":"SURAI","lat":22.42291,"longi": 71.19617,"calls":143},
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":7},
+              ],
+            "cotton":[
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":70},
+               {"village":"KANDHASAR","lat":22.43210,"longi":71.26515,"calls":44},
+              {"village":"KHERANA","lat":22.42865,"longi":71.1456,"calls":151},
+              {"village":"LAKHCHOKIYA","lat":26.18322,"longi":91.74549,"calls":19}
+              ],
+               "mustard":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":9},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              ],
+            "maize":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              {"village":"BHADUKA","lat":22.545035,"longi": 71.478483,"calls":34},
+              {"village":"BHETSUDA","lat":21.662299,"longi":71.392086,"calls":7},
+              {"village":"BHIMORA","lat":21.63536,"longi": 70.15079,"calls":76},
+              {"village":"CHIRODA","lat":21.35686,"longi": 71.692178,"calls":34},
+              {"village":"DHAJALA","lat":22.37237,"longi":71.413609,"calls":247},
+              {"village":"DHAMRASLA","lat":21.80964,"longi": 73.13478,"calls":261},
+              {"village":"DHANDHALPUR","lat":22.383333,"longi": 71.35,"calls":132},
+              {"village":"HIRASAR","lat":22.386017,"longi":71.233221,"calls":7},
+              {"village":"MOKASAR","lat":22.34661,"longi": 71.20984,"calls":3},
+              {"village":"MOTA KANGHASAR","lat":22.43210,"longi":71.26515,"calls":143},
+              {"village":"NANI MORSAL","lat":22.71792,"longi":82.38922,"calls":9},
+              {"village":"PANCHAVADA","lat":21.68543,"longi":71.88998,"calls":7},
+              {"village":"PIPLIYA","lat":21.75274,"longi": 71.91494,"calls":238},
+              {"village":"RAJAVAD","lat":22.70201,"longi": 70.74502,"calls":45},
+              {"village":"SANGANI","lat":22.04352,"longi": 70.86699,"calls":35},
+              {"village":"SANOSARA","lat":21.73000,"longi": 71.76000,"calls":16},
+              {"village":"SURAI","lat":22.42291,"longi": 71.19617,"calls":143},
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":7},
+              ],
+            "gram":[
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":70},
+              {"village":"PIPLIYA","lat":21.75274,"longi": 71.91494,"calls":238},
+              {"village":"RAJAVAD","lat":22.70201,"longi": 70.74502,"calls":45},
+              {"village":"SANGANI","lat":22.04352,"longi": 70.86699,"calls":35},
+              {"village":"SANOSARA","lat":21.73000,"longi": 71.76000,"calls":16}
+              ],
+             "garlic":[
+              {"village":"AKALA","lat":21.662299,"longi":71.392086,"calls":9},
+              {"village":"BAMANBORE","lat":22.41553,"longi": 71.04123,"calls":0},
+              ],
+            "onion":[
+              {"village":"DHANDHALPUR","lat":22.383333,"longi": 71.35,"calls":132},
+              {"village":"HIRASAR","lat":22.386017,"longi":71.233221,"calls":7},
+              {"village":"KANDHASAR","lat":22.43210,"longi":71.26515,"calls":44},
+              {"village":"KHERANA","lat":22.42865,"longi":71.1456,"calls":151},
+              {"village":"LAKHCHOKIYA","lat":26.18322,"longi":91.74549,"calls":19},
+              {"village":"MOKASAR","lat":22.34661,"longi": 71.20984,"calls":3},
+              {"village":"MOTA KANGHASAR","lat":22.43210,"longi":71.26515,"calls":143},
+              {"village":"NANI MORSAL","lat":22.71792,"longi":82.38922,"calls":9},
+              {"village":"PANCHAVADA","lat":21.68543,"longi":71.88998,"calls":7},
+              {"village":"PIPLIYA","lat":21.75274,"longi": 71.91494,"calls":238},
+              {"village":"RAJAVAD","lat":22.70201,"longi": 70.74502,"calls":45},
+              {"village":"SANGANI","lat":22.04352,"longi": 70.86699,"calls":35},
+              {"village":"SANOSARA","lat":21.73000,"longi": 71.76000,"calls":16},
+              {"village":"SURAI","lat":22.42291,"longi": 71.19617,"calls":143},
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":7},
+              ],
+            "paddy":[
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"TRAMBODA","lat":22.33554,"longi":  71.17896,"calls":70},
+              {"village":"NANI MORSAL","lat":22.71792,"longi":82.38922,"calls":9},
+              {"village":"PANCHAVADA","lat":21.68543,"longi":71.88998,"calls":7}
+              ],
+              "wheat":[
+              {"village":"TAJPAR","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"PIPLIYA","lat":22.33554,"longi":  71.17896,"calls":70},
+              {"village":"RAJAVAD","lat":22.71792,"longi":82.38922,"calls":9},
+              {"village":"PANCHAVADA","lat":21.68543,"longi":71.88998,"calls":7},
+              {"village":"SURAI","lat":22.42291,"longi": 71.19617,"calls":143},
+              {"village":"NANI MORSAL","lat":23.37637,"longi": 72.81721,"calls":87},
+              {"village":"AKALA","lat":22.33554,"longi":  71.17896,"calls":7}
+              ]
+            };
 
             L.tileLayer('http://{s}.tile.cloudmade.com/9b98fefe8bfa40bca037ecb1e48c7b36/94437/256/{z}/{x}/{y}.png', {
                     attribution:'',
@@ -179,9 +360,9 @@
             function drawcircle(cropselected){
             var i;
             //L.clearLayers();
-            var vilcropdata = villagedata[0][cropselected];
+            var vilcropdata = villagedata[cropselected];
             for(i=0;i<vilcropdata.length;i++){
-                var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*2,{
+                var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*50,{
                 color: '#ff8235 ',
                 fillColor: '#ff8235',
                 fillOpacity: 0.4
@@ -261,7 +442,7 @@
 
            var colorScale=d3.scale.linear()
                             .domain([minDur,maxDur])
-                            .range(["#9dff9d","#003b00"])
+                            .range(["#fff4be","#ff6716"])
                             .interpolate(d3.interpolateLab);
 
 
@@ -503,7 +684,7 @@
                     cropdata=filterDatabyYear(cropdata);
                     //Redraw bar chart
                     redraw(cropdata);
-                    d3.selectAll(".lineChart").transition().attr("class","none").remove();
+                    d3.selectAll(".lineChart").remove();
                     for(index in topics){
                        
                        topic=topics[index];
@@ -684,7 +865,7 @@
                   linedata.push(tlist[key]);
               }
               
-              if(linedata.length<=5){
+              if(linedata.length==0){
                 return 0;
               }
               //Plot graph
@@ -693,7 +874,7 @@
 
               var w=200;
               var h=100;
-              var margin=5;
+              var margin=3;
               y = d3.scale.linear().domain([0, d3.max(linedata)]).range([0 + margin, h - margin]),
               //x = d3.time.scale().domain([startdate, enddate]).range([0 + margin, w - margin]);
               x = d3.scale.linear().domain([0, linedata.length]).range([0 + margin, w - margin]);
@@ -703,16 +884,13 @@
               .attr("width",w)
               .attr("height",h);
 
-              var g=vis.append("svg:g")
-              .attr("transform","translate(0,"+h+")")
-              
-              g.append("text")
+              /*vis.append("div")
+               .append("text")
               .attr("class","info")
-              .text(topicV)
-              .attr({
-                "x":50,
-                "y":-80
-              });
+              .text(topicV);*/
+
+              var g=vis.append("svg:g")
+              .attr("transform","translate(0,"+h+")");
 
               var line=d3.svg.line()
               .x(function(d,i){
