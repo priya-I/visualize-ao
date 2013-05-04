@@ -70,6 +70,11 @@
             .spangrey {
               background-color: #222222;
             }
+
+            .btn-group{
+              padding:12px 30px;
+            }
+
             
         
     </style>
@@ -80,26 +85,13 @@
 
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-           <span class="icon-bar"></span>
-           <span class="icon-bar"></span>
-           <span class="icon-bar"></span>
-         </button>
-          <a class="brand" href="#">Avaaj Otalo Visualization</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li class="active"><a href="#">Visualization</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-    <br/><br/>
+  <div class="page-header">
+  </br>
+    <h1>Avaaj Otalo   <small>This visualization aims to plot the various usage statistics of the AO platform</small></h1>
+  </div>
 
-                    <div class="btn-group" data-toggle="buttons-radio">
+
+                    <div class="btn-group-vertical span2" data-toggle="buttons-radio" >
                      <button class="btn" id="all">All</button>
                      <button class="btn" id="brinjal">Brinjal</button>  
                      <button class="btn" id="castor">Castor</button>  
@@ -117,11 +109,10 @@
 
                    </div>
 
-            
+           
     <div class="container-fluid">
     <div class="row-fluid">
-        <div class="span6 bars">
-        <div class = "spangrey"></div>
+        <div class="span5 bars">
          
        <!--     <div class="span6"></div>
             <div class="span6">
@@ -132,13 +123,9 @@
             </form>
             </div><!--span6-->
         </div><!--span6 bars-->
-         <div class="span6">
-            <div class="span3 donut1 donut2"> 
-                        <div class = "spangrey"></div>
-            </div>
-               
-            <div class="span9"><!--Map goes in this span-->
-                <p><span class="label label-inverse">Map of Gujarat showing where the calls came from</span></p>
+         <div class="span5">
+
+              <!--<span class="label label-inverse">Map of Gujarat showing where the calls came from</span></p>-->
             <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
             <div id="map"> 
             <script>
@@ -290,7 +277,7 @@
               ]
             };
 
-              L.tileLayer('http://{s}.tile.cloudmade.com/9b98fefe8bfa40bca037ecb1e48c7b36/94437/256/{z}/{x}/{y}.png', {
+              L.tileLayer('http://{s}.tile.cloudmade.com/9b98fefe8bfa40bca037ecb1e48c7b36/22677/256/{z}/{x}/{y}.png', {
                     attribution:'',
                     maxZoom: 18
                 }).addTo(map);
@@ -321,6 +308,9 @@
           
     
     </div><!--/row-->
+     <div class="row-fluid">
+      <div class="span10 lines"></div>
+     </div>
     
 
         <script type="text/javascript">
@@ -374,7 +364,7 @@
 
             var colorScale=d3.scale.linear()
                             .domain([minDur,maxDur])
-                            .range(["#FFEC8B", "#FF3300"])
+                            .range(["#fff4be","#ff782f"])
                             .interpolate(d3.interpolateLab);
 
             var cropMap=[]
@@ -760,6 +750,122 @@
                   return arc(i(t));
                 };
             }
+
+                        function plotMultiples(cropV,topicV){
+            //Get the topic data from the finaldata.json
+              var tlist={};
+              for(i=0;i<linDat.length;i++){
+                       content=String(linDat[i]['crop']);
+                       if((content.toLowerCase()==cropV || cropV=='all') & linDat[i]['topic']==topicV){
+                        weekno=linDat[i]['weekno']+","+linDat[i]['year'];
+                         if(tlist[weekno]==null){
+                            tlist[weekno]=1;
+                          }else{
+                            tlist[weekno]+=1;
+                          }
+
+                      }
+                }
+              
+              linedata=[];
+              for(key in tlist){
+                  linedata.push(tlist[key]);
+              }
+              
+              if(linedata.length==0){
+                return 0;
+              }
+              //Plot graph
+              var startdate=new Date("10/1/2011");
+              var enddate=new Date("5/19/2012");
+
+              var w=200;
+              var h=100;
+              var margin=3;
+              y = d3.scale.linear().domain([0, d3.max(linedata)]).range([0 + margin, h - margin]),
+              //x = d3.time.scale().domain([startdate, enddate]).range([0 + margin, w - margin]);
+              x = d3.scale.linear().domain([0, linedata.length]).range([0 + margin, w - margin]);
+              var vis=d3.selectAll(".lines")
+              .append("svg:svg")
+              .attr("class","lineChart")
+              .attr("width",w)
+              .attr("height",h);
+
+              /*vis.append("div")
+               .append("text")
+              .attr("class","info")
+              .text(topicV);*/
+
+              var g=vis.append("svg:g")
+              .attr("transform","translate(0,"+h+")");
+
+              var line=d3.svg.line()
+              .x(function(d,i){
+                return x(i);
+              })
+              .y(function(d){
+                return -1*y(d);
+              });
+
+              g.append("svg:path").attr("d",line(linedata))
+              .attr("class","line");
+
+
+              g.append("svg:line")
+              .attr("x1", x(0))
+              .attr("y1", -1 * y(0))
+              .attr("x2", x(w))
+              .attr("y2", -1 * y(0));
+           
+              g.append("svg:line")
+                  .attr("x1", x(0))
+                  .attr("y1", -1 * y(0))
+                  .attr("x2", x(0))
+                  .attr("y2", -1 * y(d3.max(linedata)));
+
+              g.selectAll(".xLabel")
+              .data(x.ticks(5))
+              .enter().append("svg:text")
+              .attr("class", "xLabel")
+              .text(String)
+              .attr("class","line")
+              .attr("x", function(d) { return x(d) })
+              .attr("y", 0)
+              .attr("text-anchor", "middle");
+           
+              g.selectAll(".yLabel")
+              .data(y.ticks(5))
+              .enter().append("svg:text")
+              .attr("class", "yLabel")
+              .text(String)
+              .attr("class","line")
+              .attr("x", 0)
+              .attr("y", function(d) { return -1 * y(d) })
+              .attr("text-anchor", "right")
+              .attr("dy", 4);
+
+              g.selectAll(".xTicks")
+                .data(x.ticks(5))
+                .enter().append("svg:line")
+                .attr("class", "xTicks")
+                .attr("x1", function(d) { return x(d); })
+                .attr("y1", -1 * y(0))
+                .attr("x2", function(d) { return x(d); })
+                .attr("y2", -1 * y(-0.3));
+                
+             
+            g.selectAll(".yTicks")
+                .data(y.ticks(4))
+                .enter().append("svg:line")
+                .attr("class", "yTicks")
+                .attr("y1", function(d) { return -1 * y(d); })
+                .attr("x1", x(-0.3))
+                .attr("y2", function(d) { return -1 * y(d); })
+                .attr("x2", x(0));
+
+              return 1;
+          
+      } 
 
 </script>
 
