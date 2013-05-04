@@ -6,13 +6,57 @@
     <script type="text/javascript" src="d3/d3.v3.js"></script>
     <script type="text/javascript" src="data/finaldata.json"></script>
    <style>
-   
+      path {
+        stroke: steelblue;
+        stroke-width: 2;
+        fill: none;
+      }
+     
+      line {
+          stroke: black;
+      }
+     
+      text {
+          font-family: Arial;
+          font-size: 9pt;
+      }
+
+      text.info{
+        position:absolute;
+                  left: 200px;
+                  top:200px;
+                  text-align: center;           
+                  width: 200px;                  
+                  height: 50px;                 
+                  padding: 2px;              
+                  font: 12px sans-serif;        
+                     
+                  
+                  border: 0px;      
+                  border-radius: 8px;           
+                  pointer-events: none;   
+      }
+       
    </style>
   </head>
 
   <body>
+    <a title="By Maximilian Dörrbecker (Chumwa) (own work, using this file by PlaneMad) [GFDL (http://www.gnu.org/copyleft/fdl.html) or CC-BY-SA-3.0 (http://creativecommons.org/licenses/by-sa/3.0)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3AIndia_Gujarat_location_map.svg"><img width="512" alt="India Gujarat location map" src="//upload.wikimedia.org/wikipedia/commons/thumb/a/a9/India_Gujarat_location_map.svg/512px-India_Gujarat_location_map.svg.png"/></a>
     <script type="text/javascript">
-    donutExtract();
+    var alldata=cropstop;
+    //donutExtract();
+    crop="Cotton";
+    topics=["Pests","Diseases","Fertilizers/Bio-organic","Crop Planning","Seeds","Weather","Weed Control","Irrigation","Sowing","Soil Care"];
+    var count=1;
+    for(index in topics){
+      topic=topics[index];
+      count+=plotMultiples("all",topic);
+      if(count>6){
+        break;
+      }
+    }
+
+      
      function donutExtract(){
                 var sDonut=[];
                 var dDonut=[];
@@ -61,6 +105,118 @@
                 }
                 console.log(dDonut);
             }
+
+        function plotMultiples(cropV,topicV){
+          //Get the topic from the finaldata.json
+         
+          var tlist={};
+              for(i=0;i<alldata.length;i++){
+                       content=String(alldata[i]['crop']);
+                       if((content.toLowerCase()==cropV || cropV=='all') & alldata[i]['topic']==topicV){
+                        weekno=alldata[i]['weekno']+","+alldata[i]['year'];
+                         if(tlist[weekno]==null){
+                            tlist[weekno]=1;
+                          }else{
+                            tlist[weekno]+=1;
+                          }
+
+                      }
+                }
+          console.log(tlist);
+          linedata=[];
+          for(key in tlist){
+              linedata.push(tlist[key]);
+          }
+          console.log(linedata);
+          if(linedata.length==0){
+            return 0;
+          }
+          //Plot graph
+          var startdate=new Date("10/1/2011");
+          var enddate=new Date("5/19/2012");
+
+          w=300;
+          h=200;
+          margin=20;
+          y = d3.scale.linear().domain([0, d3.max(linedata)]).range([0 + margin, h - margin]),
+          //x = d3.time.scale().domain([startdate, enddate]).range([0 + margin, w - margin]);
+          x = d3.scale.linear().domain([0, linedata.length]).range([0 + margin, w - margin]);
+          var vis=d3.select("body")
+          .append("svg:svg")
+          .attr("width",w)
+          .attr("height",h);
+
+          vis.append("div")
+           .append("text")
+          .attr("class","info")
+          .text(topicV);
+
+          var g=vis.append("svg:g")
+          .attr("transform","translate(0,200)");
+
+          var line=d3.svg.line()
+          .x(function(d,i){
+            return x(i);
+          })
+          .y(function(d){
+            return -1*y(d);
+          });
+
+          g.append("svg:path").attr("d",line(linedata));
+
+          g.append("svg:line")
+          .attr("x1", x(0))
+          .attr("y1", -1 * y(0))
+          .attr("x2", x(w))
+          .attr("y2", -1 * y(0));
+       
+          g.append("svg:line")
+              .attr("x1", x(0))
+              .attr("y1", -1 * y(0))
+              .attr("x2", x(0))
+              .attr("y2", -1 * y(d3.max(linedata)));
+
+          g.selectAll(".xLabel")
+          .data(x.ticks(0))
+          .enter().append("svg:text")
+          .attr("class", "xLabel")
+          .text(String)
+          .attr("x", function(d) { return x(d) })
+          .attr("y", 0)
+          .attr("text-anchor", "middle");
+       
+          g.selectAll(".yLabel")
+          .data(y.ticks(0))
+          .enter().append("svg:text")
+          .attr("class", "yLabel")
+          .text(String)
+          .attr("x", 0)
+          .attr("y", function(d) { return -1 * y(d) })
+          .attr("text-anchor", "right")
+          .attr("dy", 4);
+
+          g.selectAll(".xTicks")
+            .data(x.ticks(5))
+            .enter().append("svg:line")
+            .attr("class", "xTicks")
+            .attr("x1", function(d) { return x(d); })
+            .attr("y1", -1 * y(0))
+            .attr("x2", function(d) { return x(d); })
+            .attr("y2", -1 * y(-0.3));
+         
+        g.selectAll(".yTicks")
+            .data(y.ticks(4))
+            .enter().append("svg:line")
+            .attr("class", "yTicks")
+            .attr("y1", function(d) { return -1 * y(d); })
+            .attr("x1", x(-0.3))
+            .attr("y2", function(d) { return -1 * y(d); })
+            .attr("x2", x(0));
+
+          return 1;
+          
+      }          
+
     </script>
   </body>
 </html>
