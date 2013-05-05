@@ -33,14 +33,14 @@
             
             div.tooltip {   
                   opacity:1;
-                  left:550px;
-                  top: 200px;
+                  left:500px;
+                  top: 250px;
                   text-align: left;           
                   width: 150px;                  
                   height: 50px;                 
                   padding: 2px;              
                   font-size: 12px;        
-                  color:#3D3D3D;
+                  color:"black";
                   border: 0px;      
                   border-radius: 8px;           
                   pointer-events: none;        
@@ -108,24 +108,6 @@
                font-size: 10pt;  
             }
             
-            div.small{
-              float:left;
-              width:60px;
-              padding-top:1px;
-              margin:10px;
-              color:#C4C4C4;
-              font-size: 10px
-            }
-
-            div.desc{
-              float:left;
-              width:300px;
-              padding-top:1px;
-              margin:5px;
-              color:#C4C4C4;
-              font-size: 10px
-            }
-
             div.big{
               margin:10px;
               color:#5a5a5a;
@@ -134,7 +116,7 @@
             body{
               background: #F2F1E9;
             }
-           
+            
     </style>
     <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
 
@@ -147,7 +129,9 @@
   </br>
     <h1>Avaaj Otalo   <small>This visualization aims to plot the various usage statistics of the AO platform</small></h1>
   </div>
-   
+  
+
+            
     <div class="container-fluid">
       
     <div class="row-fluid">
@@ -171,26 +155,22 @@
         <div class="span11">
           <div class="span12">
             <!--stories-->
-            <div class="desc">CROP</div>
-            <div class="small">SOWING</div>
-            <div class="small">HARVESTING</div>
-            <div class="small" style="width:100px;">AVG. NO OF SESSIONS</div>
-            <div class="small" style="width:100px;">AVG. CALL DURATION</div>
-            <div class="small" style="width:100px;">MOST FREQUENT TOPIC</div>
-            <div class="small">VILLAGE</div>
-
-            <div id="desc" class="desc" style="font-size:14px;color:black;"></div>
-            <div id="sowing" class="small" style="font-weight:bold;color:black;"></div>
-            <div id="harvest" class="small" style="font-weight:bold;color:black;"></div>
-            <div class="small" id="session" style="font-weight:bold;color:black;width:100px;"></div>
-            <div class="small" id="duration" style="font-weight:bold;color:black;width:100px;"></div>
-            <div class="small" id="topic" style="font-weight:bold;color:black;width:100px;"></div>
-            <div class="small" id="village" style="font-weight:bold;color:black;width:100px;"></div>
-                     
-            
+            <div class="big">
+            <h4 class="small">About the crop: <small id="desc">June - September</small></h4>    
+            <hr color="lightgray"></hr>
+            </div>
+            <div class="medium">
+              <h5 class="small">Sowing Period:<span id="sowing">&nbsp;</span>
+              Harvesting Period:<span id="harvest">&nbsp;</span>
+              Average no. of sessions: <span id="session">&nbsp;</span>
+              Average call duration (in s): <span id="duration">&nbsp;</span>
+              Most frequent topic: <span id="topic">&nbsp;</span>
+            </h5>
+            <hr color="lightgray"></hr> 
+            </div>
+           
+          </br></br>
           </div>
-          <hr color="lightgray"></hr> 
-
           <div class="span7 bars" id="barchart">
            
           </div><!--span6 bars-->
@@ -202,10 +182,10 @@
             <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
             <div id="map"> 
               <script>
-
                 var map = L.map('map').setView([21.662299,71.392086], 8);
                 var cropname='all';
                 var villagedata=villageDat;
+
                 L.tileLayer('http://{s}.tile.cloudmade.com/9b98fefe8bfa40bca037ecb1e48c7b36/94437/256/{z}/{x}/{y}.png', {
                         attribution:'',
                         maxZoom: 18
@@ -215,7 +195,7 @@
                 drawcircle('all');
                 var cities;
 
-                 function drawcircle(cropselected){
+                function drawcircle(cropselected){
                   var i;
                   var sizemultiplier=1;
                   if (cropselected=='all'){
@@ -253,8 +233,6 @@
                 }
               </script>
 
-       
-
             </div><!--map span-->
 
           </div><!--span6 map-->  
@@ -265,10 +243,6 @@
       </div><!--span10-->
   </div><!--row-->
         <script type="text/javascript">
-             d3.select("div#map")
-                .append("text")
-                .attr("class","title")
-                .text("Sessions & Location");
             var sDonut=[];
             var dDonut=[];
             var donutdata=cropstop;
@@ -428,7 +402,7 @@
 
                 barChart.enter()
                         .append("rect")
-                        .transition().duration(1000)
+                        .transition().duration(500)
                         .attr({
                         "x":function(d,i){
                             relX=padding+i*(barWidth+barPadding);
@@ -455,13 +429,12 @@
                 .attr("class","tooltip")
                 .html("<strong>Avg. Duration:<br/><strong> Sessions: </strong><br/><strong>Time: </strong>");
 
-                var desc=d3.select("body").select("div#desc");
-                var sowing=d3.select("body").select("div#sowing");
-                var harvest=d3.select("body").select("div#harvest");
-                var sess=d3.select("body").select("div#session");
-                var duration=d3.select("body").select("div#duration");
-                var topspan=d3.select("body").select("div#topic");
-                var village=d3.select("body").select("div#village");
+                var desc=d3.select("body").select("small#desc");
+                var sowing=d3.select("body").select("span#sowing");
+                var harvest=d3.select("body").select("span#harvest");
+                var sess=d3.select("body").select("span#session");
+                var duration=d3.select("body").select("span#duration");
+                var topic=d3.select("body").select("span#topic");
                                 
 
                 barChart.on("mouseover",function(d){
@@ -471,7 +444,8 @@
                         "width":15,
                         "fill":"black"
                     });
-                   
+                    div.transition()
+                        .style("opacity",.6)
                     div.html(
                         "<strong>Avg. Duration: "+d['duration']+" s<br/><strong> Sessions: </strong>"+d['sessions']+"<br/><strong>Time: </strong>"+d['date']);
                     })
@@ -558,35 +532,9 @@
                     //add new based on crop selected
                     drawcircle(crop);
                     cropdata=cropMap[crop];
-                    
-                    desc.text(cropdata[0]['crops'][0])
+                     desc.text(cropdata[0]['crops'])
                       .transition()
-                      .duration(1000);
-
-                    sowing.text(cropdata[0]['crops'][1])
-                      .transition()
-                      .duration(1000);
-
-                    harvest.text(cropdata[0]['crops'][2])
-                      .transition()
-                      .duration(1000);
-
-                    sess.text(cropdata[0]['crops'][3])
-                      .transition()
-                      .duration(1000);
-
-                    duration.text(cropdata[0]['crops'][4])
-                      .transition()
-                      .duration(1000);
-
-                    topspan.text(cropdata[0]['crops'][5])
-                      .transition()
-                      .duration(1000);
-
-                    village.text(cropdata[0]['crops'][6])
-                      .transition()
-                      .duration(1000);
-                    
+                      .duration(500);
                     cropdata=filterDatabyYear(cropdata);
                    
                     //Redraw bar chart
@@ -614,7 +562,7 @@
                                
                 for(index in topics){
                   topic=topics[index];
-                  
+                  console.log(crop,topic);
                   count+=plotMultiples(crop,topic);
                   if(count>5){
                     count=1;
@@ -640,7 +588,7 @@
             }
 
             function redraw(cropdata){
-                
+                console.log(cropdata);
                 cropdata=_.sortBy(cropdata,function(d){
                   return new Date(d['date']);
                });
@@ -649,7 +597,7 @@
                 startdate=new Date(cropdata[0]['date']);
                 enddate=new Date(cropdata[cropdata.length-1]['date']);
                 timescale.domain([startdate,enddate]);
-                svg.select(".xaxis").transition().duration(1000).call(xAxis);
+                svg.select(".xaxis").transition().duration(2000).call(xAxis);
 
                 //Y-Axis Redraw
                 minSess=d3.min(cropdata,function(d){
@@ -660,7 +608,7 @@
                     return parseInt(d['sessions']);
                 })
                 sessionscale.domain([minSess,maxSess]);
-                svg.select(".yaxis").transition().duration(1000).call(yAxis);
+                svg.select(".yaxis").transition().duration(2000).call(yAxis);
 
                 barChart=svg.selectAll("rect")
                         .data(cropdata);
@@ -718,7 +666,7 @@
                       }
                     }
                 }
-                
+                console.log(sDonut);
                 dDonut['all']=[0,0,0,0];
                 for(i=0;i<donutdata.length;i++){
                     name=donutdata[i]['crop'].toLowerCase();
@@ -738,7 +686,7 @@
                       }
                     }
                 }
-                
+                console.log(dDonut);
             }
 
             function arcTween(a) {
