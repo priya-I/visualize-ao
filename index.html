@@ -89,7 +89,7 @@
           }
 
           path.line{
-              stroke: #a5682a;
+              stroke: #80c080;
               stroke-width: 2;
               fill: none;
             }
@@ -200,6 +200,9 @@
                   var sizemultiplier=1;
                   if (cropselected=='all'||cropselected=="cotton"){
                     sizemultiplier = 1;
+                  }
+                  elseif (cropselected=='cotton'){
+                    sizemultiplier = 10;
                   }
                   else{
                     sizemultiplier = 50;
