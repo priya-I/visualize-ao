@@ -393,9 +393,8 @@
                 .attr("class","tooltip")
                 .style("opacity",0);
 
-                var cropdat=d3.select("body").append("div")
-                .attr("class","story")
-                .style("opacity",0);
+                var cropdat=d3.select(".desc")
+                .style("opacity",1);
 
                 barChart.on("mouseover",function(d){
                     d3.select(this)

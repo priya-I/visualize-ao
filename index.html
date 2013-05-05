@@ -32,14 +32,15 @@
         <style type="text/css">
             
             div.tooltip {   
-                  position: absolute;           
-                  text-align: center;           
-                  width: 100px;                  
+                  opacity:1;
+                  left:500px;
+                  top: 250px;
+                  text-align: left;           
+                  width: 150px;                  
                   height: 50px;                 
                   padding: 2px;              
-                  font: 12px sans-serif;        
-                  background: #000;   
-                  color:#FFFFFF;
+                  font-size: 12px;        
+                  color:"black";
                   border: 0px;      
                   border-radius: 8px;           
                   pointer-events: none;        
@@ -106,7 +107,11 @@
                font-weight: bold;
                font-size: 10pt;  
             }
-              
+            
+            div.big{
+              margin:10px;
+              color:#5a5a5a;
+            }
     </style>
     <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
 
@@ -145,11 +150,24 @@
         <div class="span11">
           <div class="span12">
             <!--stories-->
-            Sowing Period:     Harvesting Period:
-
+            <div class="big">
+            <h4 class="small">About the crop: <small id="desc">June - September</small></h4>    
+            <hr color="lightgray"></hr>
+            </div>
+            <div class="medium">
+              <h5 class="small">Sowing Period:<span id="sowing">&nbsp;</span>
+              Harvesting Period:<span id="harvest">&nbsp;</span>
+              Average no. of sessions: <span id="session">&nbsp;</span>
+              Average call duration (in s): <span id="duration">&nbsp;</span>
+              Most frequent topic: <span id="topic">&nbsp;</span>
+            </h5>
+            <hr color="lightgray"></hr> 
+            </div>
+           
           </br></br>
           </div>
           <div class="span7 bars" id="barchart">
+           
           </div><!--span6 bars-->
 
           <!--map-->
@@ -218,7 +236,6 @@
                           .append("svg")
                           .attr("width",actualW)
                           .attr("height",extendedH);
-                         
             
             var barWidth=(w-padding)/alldata.length-barPadding;
                 
@@ -384,11 +401,15 @@
                 //Tooltip on mouse over
                 var div=d3.select("body").append("div")
                 .attr("class","tooltip")
-                .style("opacity",0);
+                .html("<strong>Avg. Duration:<br/><strong> Sessions: </strong><br/><strong>Time: </strong>");
 
-                var cropdat=d3.select("body").append("div")
-                .attr("class","story")
-                .style("opacity",0);
+                var desc=d3.select("body").select("small#desc");
+                var sowing=d3.select("body").select("span#sowing");
+                var harvest=d3.select("body").select("span#harvest");
+                var sess=d3.select("body").select("span#session");
+                var duration=d3.select("body").select("span#duration");
+                var topic=d3.select("body").select("span#topic");
+                                
 
                 barChart.on("mouseover",function(d){
                     d3.select(this)
@@ -400,32 +421,23 @@
                     div.transition()
                         .style("opacity",.6)
                     div.html(
-                        "Duration: "+d['duration']+" s, Sessions: "+d['sessions']+"<br/>"+"Time: "+d['date'])
-                        .style("left",(d3.event.pageX)+"px")
-                        .style("top",(d3.event.pageY)+"px");
+                        "<strong>Avg. Duration: "+d['duration']+" s<br/><strong> Sessions: </strong>"+d['sessions']+"<br/><strong>Time: </strong>"+d['date']);
                     })
                     .on("mouseout",function(){
-                    d3.select(this)
-                    .transition()
-                    .attr({
-                        "width":barWidth,
-                        "fill": function(d) {
-                            return colorScale(parseInt(d['duration']));
-                        }
-                    })
-                    div.transition()
-                    .duration(500)
-                    .style("opacity",0)
-                    
-                })
-                .on("click",function(d){
-                    cropdat.text(d['crops'])
-                    .transition()
-                    .duration(500)
-                    .style("opacity",0.6)
-                })
+                          d3.select(this)
+                          .transition()
+                          .attr({
+                              "width":barWidth,
+                              "fill": function(d) {
+                                  return colorScale(parseInt(d['duration']));
+                              }
+                          })
+                          div.html(
+                           "<strong>Avg. Duration:<br/><strong> Sessions: </strong><br/><strong>Time: </strong>"
+                           );
+                        });                           
                 
-            
+
                 //Creating the axes
                 var xAxis = d3.svg.axis()
                       .scale(timescale)
@@ -480,6 +492,7 @@
 
                 d3.selectAll("button")
                 .on("click",function(d){
+
                     crop=d3.select(this).attr("id");
                     //path1 = path1.data(pie(sDonut[crop])); // update the data
                     //path1.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
@@ -493,12 +506,15 @@
                     //add new based on crop selected
                     drawcircle(crop);
                     cropdata=cropMap[crop];
+                     desc.text(cropdata[0]['crops'])
+                      .transition()
+                      .duration(500);
                     cropdata=filterDatabyYear(cropdata);
+                   
                     //Redraw bar chart
                     redraw(cropdata);
                     d3.selectAll(".lineChart").remove();
                     for(index in topics){
-                       
                        topic=topics[index];
                        count+=plotMultiples(crop,topic);
                         if(count>5){
@@ -508,13 +524,13 @@
                     } 
                 });
 
-                d3.selectAll("input")
+              /*  d3.selectAll("input")
                 .on("change",function(d){
                     period=d3.select(this).attr("value");
                     cropdata=cropMap[crop];
                     newdata=filterDatabyYear(cropdata);
                     redraw(newdata);
-                });
+                });*/
 
                 var count=1;
                                
@@ -532,13 +548,13 @@
             //Function start here
 
             function filterDatabyYear(dat){
+                start=new Date("9/3/2011");
+                end=new Date("7/20/2012");
                 var newdat=[];
-                if(period=='all'){
-                    return dat;
-                }
+               
                 for(i=0;i<dat.length;i++){
                     tempdate=new Date(dat[i]['date']);
-                    if(tempdate.getFullYear()==period){
+                    if(tempdate>start & tempdate<end){
                         newdat.push(dat[i]);
                     }    
                 }
