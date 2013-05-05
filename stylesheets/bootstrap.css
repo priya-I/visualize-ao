@@ -652,7 +652,7 @@ h1{
   font-family: inherit;
 
   line-height: 20px;
-  color: #E3675C;
+  color: #80c080;
   text-rendering: optimizelegibility;
 }
 h2,
@@ -3103,7 +3103,7 @@ button.close {
 
 .btn:active,
 .btn.active {
-  color: #E3675C;
+  color: #80c080;
   background-color: #cccccc \9;
 }
 
@@ -3113,7 +3113,7 @@ button.close {
 
 .btn:hover {
 
-  color: #E3675C;;
+  color: #80c080;
   text-decoration: none;
   background-color: #33363B;
   *background-color: #d9d9d9;
