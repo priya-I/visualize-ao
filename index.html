@@ -112,6 +112,11 @@
               margin:10px;
               color:#5a5a5a;
             }
+            
+            body{
+              background: #F2F1E9;
+            }
+            
     </style>
     <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
 
@@ -195,15 +200,25 @@
                   //L.clearLayers();
                   var vilcropdata = villagedata[0][cropselected];
                   for(i=0;i<vilcropdata.length;i++){
-                      var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*2,{
-                      color: '#ff8235 ',
-                      fillColor: '#ff8235',
+                      var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*50,{
+                      color: '#80c080',
+                      fillColor: '#80c080',
                       fillOpacity: 0.4
-                      }).bindPopup(vilcropdata[i].village);
+                      }).bindPopup("<b>Village:</b>"+vilcropdata[i].village+"<br><b>Calls:</b>"+ vilcropdata[i].calls);
+                      circle.on({
+                        mouseover: highlight
+                      })
                       circles.push(circle);
                       map.addLayer(circles[i]);
                       //cities = L.layerGroup(circles);
+
                   }
+
+                }
+                
+                function highlight(e){
+                  var layer = e.target;
+                  layer.openPopup();
                 }
               </script>
 
@@ -271,7 +286,7 @@
 
            var colorScale=d3.scale.linear()
                             .domain([minDur,maxDur])
-                            .range(["#fff4be","#ff6716"])
+                            .range(["#cfe7cf","#366d36"])
                             .interpolate(d3.interpolateLab);
 
 
