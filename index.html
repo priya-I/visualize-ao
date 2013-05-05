@@ -197,14 +197,15 @@
 
                 function drawcircle(cropselected){
                   var i;
-                  var sizemultiplier=0.1;
+                  var sizemultiplier=1;
                   if (cropselected=='all'){
-                    sizemultiplier = 0.001;
-                  }
-                  else{
                     sizemultiplier = 0.1;
                   }
+                  else{
+                    sizemultiplier = 1;
+                  }
                   //L.clearLayers();
+                  console.log(sizemultiplier);
                   var vilcropdata = villagedata[0][cropselected];
                   for(i=0;i<vilcropdata.length;i++){
                       var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*sizemultiplier,{
