@@ -144,7 +144,7 @@
             }
             
             body{
-              background: #F2F1E9;
+              background: #F2F1EF;
             }
 
             text.title{
@@ -171,7 +171,7 @@
           <span class="pull-right">
         <a href="#myModal" role="button" class="btn" data-toggle="modal">About</a>
       </span>
-      <h1 width:300px><img src="images/leaf.png">Avaaj Otalo Viz <small>
+      <h1><img src="images/leaf.png">Avaaj Otalo Viz <small>
         <p>An exploration of the usage statistics of the AO platform.
       When are the farmers calling? Where are they calling from? What are they calling about? </p></small>
       <!-- Button to trigger modal -->
@@ -225,13 +225,13 @@
    
             <div class="span5">
             </br>
-              <span id="desc"></span>
+              <span id="desc">The spike at the end of 2011 corresponds to the post-training period and could be attributed to farmers' curiosity about the system and their desire to learn more about what information is available. Application usage becomes more meaningful in 2012 as the patterns of call volumes follow the seasonal harvesting and sowing patterns of many individual crops.</span>
             </div>
             <div class="span3">
             </br>
-            <b>Sowing Season: </b><span id="sowing"></span></br>
-            <b>Harvesting Season: </b><span id="harvest"></span></br>
-            <b>Most Popular Topic: </b><span id="topic"></span></br>
+            <b>Sowing Season: </b><span id="sowing">-</span></br>
+            <b>Harvesting Season: </b><span id="harvest">-</span></br>
+            <b>Most Popular Topic: </b><span id="topic">-</span></br>
             </div>
           </div>
 
@@ -265,8 +265,6 @@
                     }).addTo(map);
 
                 var circles=new Array();
-                console.log(sizemultiplier);
-                var vilcropdata = villagedata[0][cropselected];
                 drawcircle('all');
                 var cities;
 
@@ -277,15 +275,16 @@
                     sizemultiplier = 2;
                   }
                   else if (cropselected=='cotton'){
-                    sizemultiplier = 5;
+                    sizemultiplier = 7;
                   }
                   else{
-                    sizemultiplier = 50;
+                    sizemultiplier = 70;
                   }
                   //L.clearLayers();
 
 
-                 
+                  console.log(sizemultiplier);
+                  var vilcropdata = villagedata[0][cropselected];
                   for(i=0;i<vilcropdata.length;i++){
                       var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*sizemultiplier,{
                       color: '#80c080',

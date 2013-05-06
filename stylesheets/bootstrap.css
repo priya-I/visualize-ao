@@ -161,7 +161,7 @@ textarea {
 body {
   margin: 0;
   font-family: "Century Gothic", Helvetica, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   line-height: 20px;
   color: #767676;
   background-color: #ffffff;
@@ -692,7 +692,7 @@ h3 {
 }
 
 h1 {
-  font-size: 38.5px;
+  font-size: 31.5px;
 }
 
 h2 {
@@ -700,7 +700,7 @@ h2 {
 }
 
 h3 {
-  font-size: 24.5px;
+  font-size: 23.5px;
 }
 
 h4 {
@@ -716,7 +716,7 @@ h6 {
 }
 
 h1 small {
-  font-size: 16.5px;
+  font-size: 13.5px;
 }
 
 h2 small {
@@ -3065,7 +3065,7 @@ button.close {
     padding: 13px 13px;
     margin-bottom: 0;
     *margin-left: .3em;
-    font-size: 14px;
+    font-size: 13px;
     line-height: 20px;
     *line-height: 20px;
     color: #ECF0F1;
