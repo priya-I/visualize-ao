@@ -225,7 +225,7 @@
    
             <div class="span5">
             </br>
-              <span id="desc">The spike at the end of 2011 corresponds to the post-training period and could be attributed to farmers' curiosity about the system and their desire to learn more about what information is available. Application usage becomes more meaningful in 2012 as the patterns of call volumes follow the seasonal harvesting and sowing patterns of many individual crops.</span>
+              <span id="desc">The spike at the end of 2011 corresponds to the post-training period and could be attributed to farmers' curiosity about the system. Application usage becomes more meaningful in 2012 as the patterns of call volumes follow the seasonal harvesting and sowing patterns of crops.</span>
             </div>
             <div class="span3">
             </br>
@@ -277,8 +277,11 @@
                   else if (cropselected=='cotton'){
                     sizemultiplier = 7;
                   }
+                   else if (cropselected=='cumin'){
+                    sizemultiplier = 50;
+                  }
                   else{
-                    sizemultiplier = 70;
+                    sizemultiplier = 100;
                   }
                   //L.clearLayers();
 
