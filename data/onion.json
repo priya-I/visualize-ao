@@ -1,4 +1,4 @@
-Onion=[{"week":201146,"date":"2011-11-18","sessions":44,"duration":33,"crops":"Onion "},
+Onion=[{"week":201146,"date":"2011-11-18","sessions":44,"duration":33,"crops":["A large increase in the number of calls in November corresponds to the end of onion sowing period. While some of these calls might still be addressing farmer curiosity about the application, some of them could be regarding planning for the upcoming crop season.","Oct-Nov","Apr-May","Crop Planning"]},
 {"week":201136,"date":"2011-09-06","sessions":24,"duration":0,"crops":"Onion "},
 {"week":201151,"date":"2011-12-22","sessions":1,"duration":31,"crops":"Onion "},
 {"week":20122,"date":"2012-01-13","sessions":1,"duration":32,"crops":"Onion "},

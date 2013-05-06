@@ -1,4 +1,4 @@
-Maize=[{"week":201146,"date":"2011-11-14","sessions":3,"duration":0,"crops":"Maize "},
+Maize=[{"week":201146,"date":"2011-11-14","sessions":3,"duration":0,"crops":["The number of calls for maize-related questions completely drops off after the training period.","Jun-Jul","Sep-Oct","Pests"]},
 {"week":201138,"date":"2011-09-25","sessions":5,"duration":44,"crops":"Maize "},
 {"week":201143,"date":"2011-10-26","sessions":6,"duration":49,"crops":"Maize "},
 {"week":20123,"date":"2012-01-18","sessions":1,"duration":19,"crops":"Maize "},

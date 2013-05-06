@@ -1,4 +1,4 @@
-Wheat=[{"week":201146,"date":"2011-11-19","sessions":63,"duration":14,"crops":"Wheat "},
+Wheat=[{"week":201146,"date":"2011-11-19","sessions":63,"duration":14,"crops":["The large spike at the end of 2011 is the result of post-training curiosity. Application usage that reflects a true need for information can be seen between December and March - the period of sowing (December - January) and harvesting (February - March) for wheat.","Dec-Jan","Feb-Mar","Diseases"]},
 {"week":201136,"date":"2011-09-08","sessions":66,"duration":2,"crops":"Wheat "},
 {"week":201234,"date":"2012-08-24","sessions":18,"duration":29,"crops":"Wheat "},
 {"week":201229,"date":"2012-07-20","sessions":2,"duration":31,"crops":"Wheat "},

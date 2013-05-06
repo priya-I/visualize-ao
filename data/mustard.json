@@ -1,4 +1,4 @@
-Mustard=[{"week":201210,"date":"2012-03-11","sessions":2,"duration":70,"crops":"Mustard "},
+Mustard=[{"week":201210,"date":"2012-03-11","sessions":2,"duration":70,"crops":["The number of calls placed to address questions about mustard is puzzling. An increase in December and January doesn't correspond to  seasonal or agricultural events. The majority of these calls were about crop planning, so these calls could reflect the farmers' planning process for next year.","Oct-Nov","Mar-May","Crop Planning"]},
 {"week":201146,"date":"2011-11-14","sessions":6,"duration":0,"crops":"Mustard "},
 {"week":201136,"date":"2011-09-06","sessions":6,"duration":0,"crops":"Mustard "},
 {"week":201235,"date":"2012-08-31","sessions":4,"duration":28,"crops":"Mustard "},

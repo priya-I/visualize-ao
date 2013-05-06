@@ -1,5 +1,5 @@
 Brinjal=[
-{"week":201134,"date":"8/28/2011","sessions":68,"duration":17,"crops":"Brinjal "},
+{"week":201134,"date":"8/28/2011","sessions":68,"duration":17,"crops":["The large spike at the end of 2011 is the result of post-training curiosity. Application usage reflecting a true need for information is observed between July and August - the harvest season for brinjal.","May-Jun","Jul-Aug","Diseases"]},
 {"week":201135,"date":"9/4/2011","sessions":153,"duration":20,"crops":"Brinjal "},
 {"week":201136,"date":"9/11/2011","sessions":173,"duration":14,"crops":"Brinjal "},
 {"week":201137,"date":"9/18/2011","sessions":57,"duration":41,"crops":"Brinjal "},
