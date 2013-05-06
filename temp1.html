@@ -87,7 +87,7 @@
           }
 
           path.line{
-              stroke: #a5682a;
+              stroke: #1c391c;
               stroke-width: 2;
               fill: none;
             }
@@ -114,6 +114,9 @@
                         border-radius: 8px;           
                         pointer-events: none;   
             }
+          body{
+            background: #F2F1E9;
+          }
               
     </style>
     <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
@@ -127,7 +130,7 @@
   </br>
     <h1>Avaaj Otalo   <small>This visualization aims to plot the various usage statistics of the AO platform</small></h1>
   </div>
-  
+
 
             
     <div class="container-fluid">
@@ -330,15 +333,34 @@
                   var vilcropdata = villagedata[cropselected];
                   for(i=0;i<vilcropdata.length;i++){
                       var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*50,{
-                      color: '#ff8235 ',
-                      fillColor: '#ff8235',
+                      color: '#80c080',
+                      fillColor: '#80c080',
                       fillOpacity: 0.4
-                      }).bindPopup(vilcropdata[i].village);
+                      }).bindPopup("<b>Village:</b>"+vilcropdata[i].village+"<br><b>Calls:</b>"+ vilcropdata[i].calls);
+                      circle.on({
+                        mouseover: highlight
+                      })
                       circles.push(circle);
                       map.addLayer(circles[i]);
                       //cities = L.layerGroup(circles);
+
                   }
+
                 }
+                
+                function highlight(e){
+                  var layer = e.target;
+                  layer.openPopup();
+                }
+/*
+                for (var i = 0; i < circles.length; i++) {
+                    var currentMarker = circles[i];
+                    console.log(circles[i]);
+                    currentMarker.on('mouseover', function(e){
+                      currentMarker.openPopup();
+                    });
+                }
+                */
               </script>
 
             </div><!--map span-->
@@ -406,7 +428,7 @@
 
            var colorScale=d3.scale.linear()
                             .domain([minDur,maxDur])
-                            .range(["#fff4be","#ff6716"])
+                            .range(["#cfe7cf","#366d36"])
                             .interpolate(d3.interpolateLab);
 
 
