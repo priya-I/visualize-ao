@@ -174,7 +174,7 @@
     <!-- Modal -->
     <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <a type="button" class="close" data-dismiss="modal" aria-hidden="true">×</a>
         <h3 id="myModalLabel">Avaaj Otalo</h3>
       </div>
       <div class="modal-body">
@@ -186,7 +186,7 @@
         <p>The usage of the platform in terms of number of calls and the average duration of sessions is plotted in the bar graph. The map shows the villages the calls came from and finally the small line graphs show the trend of the different problems/topics that the farmers called about. It becomes fairly easy for the researchers to find the most trending problems and they can utilize it to make better push notifications to the farmers.</p>
       </div>
       <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Continue To Explore</button>
+        <a class="btn" data-dismiss="modal" aria-hidden="true">Continue To Explore</a>
       </div>
     </div>  
 
@@ -325,7 +325,7 @@
                   //L.clearLayers();
 
 
-                  console.log(sizemultiplier);
+
                   var vilcropdata = villagedata[0][cropselected];
                   for(i=0;i<vilcropdata.length;i++){
                       var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*sizemultiplier,{
@@ -333,7 +333,8 @@
                       fillColor: '#80c080',
                       fillOpacity: 0.4
                       }).bindPopup("<b>Village: </b>"+vilcropdata[i].village+"<br><b>Calls: </b>"+ vilcropdata[i].calls);
-                      //seema add mouseout
+                  console.log(sizemultiplier);                      
+                      //add mouseout
                       circle.on({
                         mouseover: highlight,
                         mouseout: resetpopup
