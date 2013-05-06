@@ -7,7 +7,7 @@ Wheat=[{"week":201146,"date":"2011-11-19","sessions":63,"duration":14,"crops":["
 {"week":201150,"date":"2011-12-17","sessions":2,"duration":58,"crops":"Wheat "},
 {"week":201140,"date":"2011-10-09","sessions":90,"duration":8,"crops":"Wheat "},
 {"week":201137,"date":"2011-09-16","sessions":22,"duration":22,"crops":"Wheat "},
-{"week":201228,"date":"2012-07-09","sessions":1,"duration":0,"crops":"Wheat "},
+{"week":201228,"date":"2012-07-09","sessions":1,"duration":2,"crops":"Wheat "},
 {"week":201134,"date":"2011-08-28","sessions":54,"duration":21,"crops":"Wheat "},
 {"week":20122,"date":"2012-01-13","sessions":5,"duration":40,"crops":"Wheat "},
 {"week":201141,"date":"2011-10-14","sessions":9,"duration":23,"crops":"Wheat "},

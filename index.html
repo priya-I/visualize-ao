@@ -22,6 +22,7 @@
     <script type="text/javascript" src="data/cumin.json"></script>
     <script type="text/javascript" src="data/villageCalls.json"></script>
     <script type="text/javascript" src="data/finaldata.json"></script>
+    <script src="assets/js/jquery.js"></script>
     <script type="text/javascript" src="javascripts/underscore-min.js"></script>
     <link href='http://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
@@ -29,7 +30,7 @@
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 
     <!-- Le styles -->
-    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
         <style type="text/css">
        
             line.xTicks{
@@ -57,7 +58,7 @@
                   position:absolute;
                   opacity:1;
                   left:550px;
-                  top: 680px;
+                  top: 700px;
                   text-align: left;           
                   width: 200px;                  
                   height: 50px;                 
@@ -154,34 +155,51 @@
            
     </style>
     <link href="stylesheets/bootstrap-responsive.css" rel="stylesheet">
-
+    <script type="text/javascript">
+      $(window).load(function(){
+          console.log("inside load");
+          $('#myModal').modal('show');
+      });
+    </script>
 
   </head>
 
   <body>
 
-  <div class="page-header">
+   <div class="page-header header-inner">
     </br>
-      <h1>Avaaj Otalo   <small>This visualization aims to plot the various usage statistics of the AO platform</small></h1>
-      <!-- Button to trigger modal -->
-      <span class="pull-right">
-        <a href="#myModal" role="button" class="btn-primary" data-toggle="modal">About</a>
+          <span class="pull-right">
+        <a href="#myModal" role="button" class="btn" data-toggle="modal">About</a>
       </span>
+      <h1 width:300px><img src="images/leaf.png">Avaaj Otalo Viz <small>
+        <p>An exploration of the usage statistics of the AO platform.
+      When are the farmers calling? Where are they calling from? What are they calling about? </p></small>
+      <!-- Button to trigger modal -->
+
+   </h1>
+     </div>
+    <!-- Modal -->
    
     <!-- Modal -->
-    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h3 id="myModalLabel">Modal header</h3>
+        <a type="button" class="close" data-dismiss="modal" aria-hidden="true">×</a>
+        <h3 id="myModalLabel">Avaaj Otalo</h3>
       </div>
       <div class="modal-body">
-        <p>Avaaj Otalo Lorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsumLorem ipsum</p>
+        <p><b>Avaaj Otalo</b> (literally, “voice stoop”) is an interactive voice application for small-scale farmers in Gujarat, India. It provides farmers with access to relevant agricultural information over the phone. </p>
+        <p>The data obtained from the researchers of this platform, is the result of their study conducted from August 2011 to August 2012. Working with the Development Support Centre (DSC), a NGO with extensive experience in delivering agricultural extension, the research team randomly assigned toll-free access to AO to 800 households. These households were spread across 40 villages in Surendranagar district in Gujarat, India</p>
+
+        <p>The main objective of our visualization is to allow the founders and the researchers of Avaaj Otalo to analyze and visually explore key metrics of platform utilization by Gujarati farmers. </p>
+
+        <p>The usage of the platform in terms of number of calls and the average duration of sessions is plotted in the bar graph. The map shows the villages the calls came from and finally the small line graphs show the trend of the different problems/topics that the farmers called about. It becomes fairly easy for the researchers to find the most trending problems and they can utilize it to make better push notifications to the farmers.</p>
       </div>
       <div class="modal-footer">
-        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <a class="btn" data-dismiss="modal" aria-hidden="true">Continue To Explore</a>
       </div>
     </div>  
-  </div>
+
+   <!--Opening Modal on page load-->
    
     <div class="container-fluid">
       
@@ -207,7 +225,7 @@
    
             <div class="span5">
             </br>
-            <b>Crop Story: </b><span id="desc"></span>
+              <span id="desc"></span>
             </div>
             <div class="span3">
             </br>
@@ -219,7 +237,7 @@
 
 
           <div class="span7 bars" id="barchart">
-           <h3> Usage:</h3>
+           <h3>Weekly Usage:</h3>
            </br>
           </div><!--span6 bars-->
 
@@ -247,6 +265,8 @@
                     }).addTo(map);
 
                 var circles=new Array();
+                console.log(sizemultiplier);
+                var vilcropdata = villagedata[0][cropselected];
                 drawcircle('all');
                 var cities;
 
@@ -265,8 +285,7 @@
                   //L.clearLayers();
 
 
-                  console.log(sizemultiplier);
-                  var vilcropdata = villagedata[0][cropselected];
+                 
                   for(i=0;i<vilcropdata.length;i++){
                       var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*sizemultiplier,{
                       color: '#80c080',
@@ -306,7 +325,7 @@
 
 
       <div class="span12 lines">
-        <h3> Trend Of Topics:</h3>
+        <h3> Trend Of Popular Topics:</h3>
       </br>
       </div>
 
@@ -535,7 +554,17 @@
                 .attr("transform", "rotate(-90)")
                 .text("# of calls");
 
-               
+                var count=1;
+                               
+                for(index in topics){
+                  console.log(count,topics);
+                  topic=topics[index];
+                  count+=plotMultiples(crop,topic);
+                  if(count>5){
+                    count=1;
+                    break;
+                  }
+                } 
 
                 d3.selectAll("button")
                 .on("click",function(d){
@@ -587,6 +616,7 @@
                    
                     //Redraw bar chart
                     redraw(cropdata);
+                    count=1;
                     d3.selectAll(".lineChart").remove();
                     for(index in topics){
                        topic=topics[index];
@@ -606,17 +636,7 @@
                     redraw(newdata);
                 });*/
 
-                var count=1;
-                               
-                for(index in topics){
-                  topic=topics[index];
-                  
-                  count+=plotMultiples(crop,topic);
-                  if(count>5){
-                    count=1;
-                    break;
-                  }
-                } 
+               
 
 
             //Function start here
@@ -763,7 +783,7 @@
               .attr("class","info")
               .text(topicV)
               .attr({
-                "x":90,
+                "x":60,
                 "y":25
               });
 
@@ -876,7 +896,12 @@
 
   </body>
     <footer>
-        <p>&copy; Info 247 Avaaj Otalo Team </p>
+        <span class="pull-right">
+        <p>&copy; Info 247 Avaaj Otalo Team : Priya Iyer | Seema Puthyapurayil | Julia Kosheleva-Coats </p>
+
+      </span>
+        <p>Icon &copy; Dmitry Baranovskiy,The Noun Project</p>
+
       </footer>
 
 </html>
