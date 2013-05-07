@@ -119,6 +119,11 @@
                 font-weight: bold;
                 font-size: 10pt;  
             }
+
+             text.x.linelab,text.y.linelab{
+                color: #767676;
+                font-size: 9pt;  
+            }
             
             div.small{
               float:left;
@@ -328,6 +333,7 @@
 
       <div class="span12 lines">
         <h3> Trend Of Popular Topics:</h3>
+        <small>The below line charts plot the number of calls made over Sep 2011 to Jul 2012 for different crop problems.</small>
       </br>
       </div>
 
@@ -754,7 +760,8 @@
                 dates.push(linedata[i][1]);
               }
              
-              var w=225;
+              var exw=230;
+              var w=220;
               var exh=180;
               var h=150;
               var margin=20;
@@ -779,15 +786,15 @@
               .attr("height",exh);
 
               var g=vis.append("svg:g")
-              .attr("transform","translate(0,"+h+")"); 
+                .attr("transform","translate(0,"+h+")"); 
               
               g.append("text")
-              .attr("class","info")
-              .text(topicV)
-              .attr({
-                "x":60,
-                "y":25
-              });
+                .attr("class","info")
+                .text(topicV)
+                .attr({
+                  "x":60,
+                  "y":25
+                });
 
               var line=d3.svg.line()
               .x(function(d,i){
@@ -860,6 +867,20 @@
                 .attr("y2", function(d) { return -1 * y(d); })
                 .attr("x2", x(minDate));
 
+            /*vis.append("text")
+                .attr("class","x linelab")
+                .attr("text-anchor","middle")
+                .attr("x",exw/2)
+                .attr("y",exh)
+                .text("Months");
+
+            vis.append("text")
+                .attr("class", "y linelab")
+                .attr("text-anchor", "middle")
+                .attr("x",-(exh-margin)/2)
+                .attr("y",5)
+                .attr("transform", "rotate(-90)")
+                .text("# of calls");*/
 
             
 
