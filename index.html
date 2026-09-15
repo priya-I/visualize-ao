@@ -22,6 +22,7 @@
     <script type="text/javascript" src="data/cumin.json"></script>
     <script type="text/javascript" src="data/villageCalls.json"></script>
     <script type="text/javascript" src="data/finaldata.json"></script>
+    <script src="assets/js/jquery.js"></script>
     <script type="text/javascript" src="javascripts/underscore-min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
@@ -574,7 +575,6 @@
                     //path2.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
                     //change circles on the map
                     for(var i=0;i<circles.length;i++) {
-                        circles[i].off();
                         map.removeLayer(circles[i]);
                     }
                     circles = [];
