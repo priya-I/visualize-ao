@@ -27,7 +27,7 @@
     <link href='https://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
-    <link rel="stylesheet" href="https://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 
     <!-- Le styles -->
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
@@ -251,7 +251,7 @@
             <h3>Location of Calls:</h3>
           
             <!--Map goes in this span-->
-            <script src="https://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
             <div id="map"> 
               <script>
 
@@ -287,7 +287,8 @@
 
                   var vilcropdata = villagedata[0][cropselected];
                   for(var i = 0; i < vilcropdata.length; i++){
-                      var circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*sizemultiplier, {
+                      var circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], {
+                        radius: (vilcropdata[i].calls)*sizemultiplier,
                         color: '#80c080',
                         fillColor: '#80c080',
                         fillOpacity: 0.4
