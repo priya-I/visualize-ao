@@ -252,10 +252,11 @@
           
             <!--Map goes in this span-->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-            <div id="map"> 
+            <script>var circles=[];var map=null;</script>
+            <div id="map">
               <script>
 
-                var map = L.map('map',{
+                map = L.map('map',{
                   center:[21.662299,71.392086],
                   zoom:7,
                   scrollWheelZoom:false
@@ -269,7 +270,7 @@
                         minZoom: 6
                     }).addTo(map);
 
-                var circles=new Array();
+                circles=[];
                 drawcircle('all');
                 var cities;
 
@@ -575,12 +576,14 @@
                     //path2 = path2.data(pie(dDonut[crop])); // update the data
                     //path2.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
                     //change circles on the map
-                    for(var i=0;i<circles.length;i++) {
-                        map.removeLayer(circles[i]);
+                    if(map) {
+                      for(var i=0;i<circles.length;i++) {
+                          map.removeLayer(circles[i]);
+                      }
+                      circles = [];
+                      //add new based on crop selected
+                      drawcircle(crop);
                     }
-                    circles = [];
-                    //add new based on crop selected
-                    drawcircle(crop);
                     cropdata=cropMap[crop];
                     
                     desc.text(cropdata[0]['crops'][0])
