@@ -37,11 +37,7 @@ count=0
 for row in csv.reader(fileinput.input()):
     if not fileinput.isfirstline():
         timestamp=row[4]
-        parsed=timestamp.split("/")
-        month=parsed[0]
-        day=parsed[1]
-        year=parsed[2][:4]
-        listendate=t.date(int(year),int(month),int(day))
+        listendate=t.datetime.strptime(timestamp[:10], "%m/%d/%Y").date()
         #Storing variables that I need 
         callduration=row[10]
         crop=row[7]
@@ -61,29 +57,20 @@ merge all tuple[2]
 
 '''
 
-o=open("bardata.csv","w+")
-o.write("Date, Sessions, Duration, Crops\n")
-for record in res:
-    avg=0
-    sessions=0
-    duration=0
-    crops=[]
-    count=0
-    cropset=""
-    for tuples in res[record]:#res[record] returns list of tuples
-        sessions+=1
-        #print tuples
-        duration+=int(tuples[1])
-        count+=1
-        crops.append(tuples[2])
-    avg=duration/count
-    print sessions,avg, record
-    
-    lisDate=record;
-    for crop in set(crops):
-        cropset+=str(crop)+" " 
-    o.write(str(lisDate)+","+str(sessions)+","+str(avg)+","+cropset+"\n")
-o.close() 
+with open("bardata.csv","w+") as o:
+    writer=csv.writer(o)
+    writer.writerow(["Date","Sessions","Duration","Crops"])
+    for record in res:
+        duration=0
+        crops=[]
+        for tuples in res[record]:
+            duration+=int(tuples[1])
+            crops.append(tuples[2])
+        sessions=len(res[record])
+        avg=duration/sessions
+        cropset=" ".join(set(crops))
+        print sessions,avg,record
+        writer.writerow([record,sessions,avg,cropset])
     
 #csv conversion to json through a website.
      
