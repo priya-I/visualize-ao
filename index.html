@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <script type="text/javascript" src="d3/d3.v3.js"></script>
+    <script type="text/javascript" src="d3/d3.v3.min.js"></script>
     <script type="text/javascript" src="data/barData2.json"></script>
     <script type="text/javascript" src="data/cotton.json"></script>
     <script type="text/javascript" src="data/castor.json"></script>
@@ -22,12 +22,11 @@
     <script type="text/javascript" src="data/cumin.json"></script>
     <script type="text/javascript" src="data/villageCalls.json"></script>
     <script type="text/javascript" src="data/finaldata.json"></script>
-    <script src="assets/js/jquery.js"></script>
     <script type="text/javascript" src="javascripts/underscore-min.js"></script>
-    <link href='http://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Noto+Serif' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/bootstrap.css"/>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
 
     <!-- Le styles -->
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
@@ -251,7 +250,7 @@
             <h3>Location of Calls:</h3>
           
             <!--Map goes in this span-->
-            <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+            <script src="https://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
             <div id="map"> 
               <script>
 
@@ -263,7 +262,7 @@
 
                 var cropname='all';
                 var villagedata=villageDat;
-                L.tileLayer('http://{s}.tile.cloudmade.com/9b98fefe8bfa40bca037ecb1e48c7b36/94437/256/{z}/{x}/{y}.png', {
+                L.tileLayer('https://{s}.tile.cloudmade.com/9b98fefe8bfa40bca037ecb1e48c7b36/94437/256/{z}/{x}/{y}.png', {
                         attribution:'Size of circle indicates number of calls',
                         maxZoom: 10,
                         minZoom: 6
@@ -274,40 +273,30 @@
                 var cities;
 
                  function drawcircle(cropselected){
-                  var i;
-                  var sizemultiplier=1;
-                  if (cropselected=='all'){
+                  var sizemultiplier = 1;
+                  if (cropselected === 'all'){
                     sizemultiplier = 2;
-                  }
-                  else if (cropselected=='cotton'){
+                  } else if (cropselected === 'cotton'){
                     sizemultiplier = 7;
-                  }
-                   else if (cropselected=='cumin'){
+                  } else if (cropselected === 'cumin'){
                     sizemultiplier = 50;
-                  }
-                  else{
+                  } else {
                     sizemultiplier = 100;
                   }
-                  //L.clearLayers();
 
-
-                  console.log(sizemultiplier);
                   var vilcropdata = villagedata[0][cropselected];
-                  for(i=0;i<vilcropdata.length;i++){
-                      var   circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*sizemultiplier,{
-                      color: '#80c080',
-                      fillColor: '#80c080',
-                      fillOpacity: 0.4
-                      }).bindPopup("<b>Village: </b>"+vilcropdata[i].village+"<br><b>Calls: </b>"+ vilcropdata[i].calls);
-                      //seema add mouseout
+                  for(var i = 0; i < vilcropdata.length; i++){
+                      var circle = L.circle([vilcropdata[i].lat, vilcropdata[i].longi], (vilcropdata[i].calls)*sizemultiplier, {
+                        color: '#80c080',
+                        fillColor: '#80c080',
+                        fillOpacity: 0.4
+                      }).bindPopup("<b>Village: </b>" + vilcropdata[i].village + "<br><b>Calls: </b>" + vilcropdata[i].calls);
                       circle.on({
                         mouseover: highlight,
                         mouseout: resetpopup
-                      })
+                      });
                       circles.push(circle);
-                      map.addLayer(circles[i]);
-                      //cities = L.layerGroup(circles);
-
+                      map.addLayer(circle);
                   }
 
                 }
@@ -343,8 +332,6 @@
 
             var startdate=new Date("9/4/2011");
             var enddate=new Date("7/19/2012");
-            var sDonut=[];
-            var dDonut=[];
             var donutdata=cropstop;
             var alldata=All;
             var actualW=700 ;
@@ -357,6 +344,19 @@
             var period="all";
             var linDat=filterDatabyYear(cropstop);
             var topics=["Pests","Diseases","Fertilizers/Bio-organic","Crop Planning","Seeds","Weather","Weed Control","Irrigation","Sowing","Soil Care"];
+
+            // Pre-index linDat by "cropname|topic" and "all|topic" for O(1) lookup in plotMultiples
+            var linDatIndex={};
+            for(var _i=0;_i<linDat.length;_i++){
+              var _crop=String(linDat[_i]['crop']).toLowerCase();
+              var _topic=linDat[_i]['topic'];
+              var _key=_crop+'|'+_topic;
+              var _allKey='all|'+_topic;
+              if(!linDatIndex[_key]) linDatIndex[_key]=[];
+              if(!linDatIndex[_allKey]) linDatIndex[_allKey]=[];
+              linDatIndex[_key].push(linDat[_i]);
+              linDatIndex[_allKey].push(linDat[_i]);
+            }
             
             var svg=d3.selectAll(".bars")
                           .append("svg")
@@ -401,20 +401,11 @@
                             .interpolate(d3.interpolateLab);
 
 
-            var cropMap=[]
-            cropMap["cotton"]=Cotton
-            cropMap["all"]=All
-            cropMap["brinjal"]=Brinjal
-            cropMap["castor"]=Castor
-            cropMap["chilli"]=Chilli
-            cropMap["cumin"]=Cumin
-            cropMap["gram"]=Gram
-            cropMap["garlic"]=Garlic
-            cropMap["mustard"]=Mustard
-            cropMap["onion"]=Onion
-            cropMap["paddy"]=Paddy
-            cropMap["wheat"]=Wheat
-            cropMap["maize"]=Maize
+            var cropMap = {
+              cotton: Cotton, all: All, brinjal: Brinjal, castor: Castor,
+              chilli: Chilli, cumin: Cumin, gram: Gram, garlic: Garlic,
+              mustard: Mustard, onion: Onion, paddy: Paddy, wheat: Wheat, maize: Maize
+            };
             var cropname='all';
             var ddata=All;
             ddata=filterDatabyYear(ddata);           
@@ -563,16 +554,15 @@
                 .text("# of calls");
 
                 var count=1;
-                               
-                for(index in topics){
-                  console.log(count,topics);
-                  topic=topics[index];
+
+                for(var index in topics){
+                  var topic=topics[index];
                   count+=plotMultiples(crop,topic);
                   if(count>5){
                     count=1;
                     break;
                   }
-                } 
+                }
 
                 d3.selectAll("button")
                 .on("click",function(d){
@@ -583,10 +573,11 @@
                     //path2 = path2.data(pie(dDonut[crop])); // update the data
                     //path2.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
                     //change circles on the map
-                     for(i=0;i<circles.length;i++) {
+                    for(var i=0;i<circles.length;i++) {
+                        circles[i].off();
                         map.removeLayer(circles[i]);
-                    }  
-                    circles = new Array();
+                    }
+                    circles = [];
                     //add new based on crop selected
                     drawcircle(crop);
                     cropdata=cropMap[crop];
@@ -626,14 +617,14 @@
                     redraw(cropdata);
                     count=1;
                     d3.selectAll(".lineChart").remove();
-                    for(index in topics){
-                       topic=topics[index];
-                       count+=plotMultiples(crop,topic);
-                        if(count>5){
-                          count=1;
-                          break;
-                        }
-                    } 
+                    for(var index in topics){
+                      var topic=topics[index];
+                      count+=plotMultiples(crop,topic);
+                      if(count>5){
+                        count=1;
+                        break;
+                      }
+                    }
                 });
 
               /*  d3.selectAll("input")
@@ -651,12 +642,11 @@
 
             function filterDatabyYear(dat){
                 var newdat=[];
-               
-                for(i=0;i<dat.length;i++){
-                    tempdate=new Date(dat[i]['date']);
-                    if(tempdate>startdate & tempdate<enddate){
+                for(var i=0;i<dat.length;i++){
+                    var tempdate=new Date(dat[i]['date']);
+                    if(tempdate>startdate && tempdate<enddate){
                         newdat.push(dat[i]);
-                    }    
+                    }
                 }
                 return newdat;
             }
@@ -725,26 +715,19 @@
            
 
              function plotMultiples(cropV,topicV){
-            //Get the topic data from the finaldata.json
               var tlist={};
               var months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-              for(i=0;i<linDat.length;i++){
-                       content=String(linDat[i]['crop']);
-                       if((content.toLowerCase()==cropV || cropV=='all') & linDat[i]['topic']==topicV){
-                        weekno=linDat[i]['weekno']+","+linDat[i]['year'];
-                         if(tlist[weekno]==null){
-                            tlist[weekno]=[1,linDat[i]['date']];
-                          }else{
-                            tlist[weekno][0]+=1;
-                          }
-
-                      }
+              var entries=linDatIndex[cropV+'|'+topicV]||[];
+              for(var i=0;i<entries.length;i++){
+                var weekno=entries[i]['weekno']+","+entries[i]['year'];
+                if(tlist[weekno]==null){
+                  tlist[weekno]=[1,entries[i]['date']];
+                }else{
+                  tlist[weekno][0]+=1;
                 }
-              
-              linedata=[];
-              for(key in tlist){
-                  linedata.push(tlist[key]);
               }
+
+              var linedata=Object.values(tlist);
               
               if(linedata.length<=5){
                 return 0;
@@ -755,7 +738,7 @@
               var enddate=new Date("7/19/2012");
               var sessions=[];
               var dates=[];
-              for(i=0;i<linedata.length;i++){
+              for(var i=0;i<linedata.length;i++){
                 sessions.push(linedata[i][0]);
                 dates.push(linedata[i][1]);
               }
@@ -797,13 +780,11 @@
                 });
 
               var line=d3.svg.line()
-              .x(function(d,i){
-                xdate=new Date(d[1]);
-                return x(xdate);
+              .x(function(d){
+                return x(new Date(d[1]));
               })
               .y(function(d){
-                ysess=d[0];
-                return -1*y(ysess);
+                return -1*y(d[0]);
               });
 
               
@@ -827,10 +808,8 @@
               .data(x.ticks(4))
               .enter().append("svg:text")
               .attr("class", "xLabel")
-              .text(function(d,i){
-                
-                val=d.getMonth();
-                return months[val];
+              .text(function(d){
+                return months[d.getMonth()];
               })
               .attr("class","xline")
               .attr("x", function(d) { return x(d) })
